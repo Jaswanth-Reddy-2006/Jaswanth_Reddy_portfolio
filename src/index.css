@@ -1,0 +1,25 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  html {
+    scroll-behavior: smooth;
+  }
+
+  body {
+    @apply bg-warmWhite text-darkText antialiased selection:bg-mutedBlue/20 selection:text-mutedBlue;
+    overflow-x: hidden;
+    overflow-y: auto;
+  }
+}
+
+@layer utilities {
+  .text-balance {
+    text-wrap: balance;
+  }
+
+  .glass-panel {
+    @apply bg-white/80 backdrop-blur-md border border-softGray shadow-soft;
+  }
+}
