@@ -15,10 +15,10 @@ export default function RealWorldExperience({ experience }: RealWorldExperienceP
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true }}
                 transition={{ duration: 0.6 }}
-                className="mb-16"
+                className="mb-10 md:mb-16"
             >
-                <h2 className="text-3xl md:text-4xl font-bold text-darkText mb-4 tracking-tight flex items-center gap-3">
-                    <Briefcase className="text-mutedBlue" size={32} />
+                <h2 className="text-2xl md:text-4xl font-bold text-darkText mb-4 tracking-tight flex items-center gap-3">
+                    <Briefcase className="text-mutedBlue" size={28} />
                     Real-World Experience
                 </h2>
                 <div className="h-1 w-20 bg-mutedBlue rounded-full" />
@@ -41,9 +41,6 @@ export default function RealWorldExperience({ experience }: RealWorldExperienceP
                                 {/* Left Column: Meta */}
                                 <div className="md:w-1/3 flex-shrink-0">
                                     <h3 className="text-xl font-bold text-darkText mb-1">{item.role}</h3>
-                                    <div className="text-xs font-mono uppercase tracking-wider text-mutedBlue mb-3">
-                                        [{item.roleTag}]
-                                    </div>
                                     <p className="text-lg text-mutedBlue font-medium mb-3">{item.company}</p>
                                     <div className="flex items-center gap-2 text-sm text-lightText bg-warmWhite/80 px-3 py-1.5 rounded-full w-fit">
                                         <Calendar size={14} />

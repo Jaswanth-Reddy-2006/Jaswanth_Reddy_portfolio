@@ -19,10 +19,10 @@ export default function ChapterFour({ certifications }: ChapterFourProps) {
                     className="text-center mb-16"
                 >
                     <h2 className="text-4xl md:text-5xl font-bold text-darkText mb-4">
-                        Proof of <span className="text-deepEmerald">Work</span>
+                        Academic <span className="text-mutedBlue italic serif">Foundation</span>
                     </h2>
                     <p className="text-lg text-lightText max-w-2xl mx-auto">
-                        Validated skills and continuous learning journey
+                        A solid background in Computer Science, engineering systems, and mathematics.
                     </p>
                 </motion.div>
 
@@ -54,15 +54,21 @@ export default function ChapterFour({ certifications }: ChapterFourProps) {
                                 </p>
 
                                 {cert.credentialUrl && (
-                                    <a
-                                        href={cert.credentialUrl}
-                                        target="_blank"
-                                        rel="noopener noreferrer"
-                                        className="inline-flex items-center gap-2 text-sm font-medium text-mutedBlue hover:text-deepEmerald transition-colors"
-                                    >
-                                        View Credential
-                                        <ExternalLink size={14} />
-                                    </a>
+                                    cert.credentialUrl.startsWith('http') ? (
+                                        <a
+                                            href={cert.credentialUrl}
+                                            target="_blank"
+                                            rel="noopener noreferrer"
+                                            className="inline-flex items-center gap-2 text-sm font-medium text-mutedBlue hover:text-deepEmerald transition-colors"
+                                        >
+                                            View Credential
+                                            <ExternalLink size={14} />
+                                        </a>
+                                    ) : (
+                                        <div className="text-sm font-bold text-mutedBlue bg-mutedBlue/5 px-3 py-1 rounded-full w-fit">
+                                            {cert.credentialUrl}
+                                        </div>
+                                    )
                                 )}
                             </HighlightItem>
                         </motion.div>

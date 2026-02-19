@@ -1,4 +1,4 @@
-import { motion } from 'framer-motion';
+import { motion, useScroll, useSpring, AnimatePresence } from 'framer-motion';
 import { Menu, X, Eye, EyeOff } from 'lucide-react';
 import { useState } from 'react';
 import { useSettings } from '../context/SettingsContext';
@@ -14,6 +14,13 @@ const navLinks = [
 export default function Navbar() {
     const [isOpen, setIsOpen] = useState(false);
     const { isMinimalView, toggleMinimalView } = useSettings();
+    const { scrollYProgress } = useScroll();
+
+    const scaleX = useSpring(scrollYProgress, {
+        stiffness: 100,
+        damping: 30,
+        restDelta: 0.001
+    });
 
     const scrollToChapter = (id: string) => {
         const element = document.getElementById(id);
@@ -29,6 +36,10 @@ export default function Navbar() {
             animate={{ y: 0 }}
             className="fixed top-0 left-0 right-0 z-50 bg-warmWhite/90 backdrop-blur-md border-b border-softGray transition-all duration-300"
         >
+            <motion.div
+                className="absolute top-0 left-0 right-0 h-1 bg-mutedBlue origin-left z-[60]"
+                style={{ scaleX }}
+            />
             <div className="max-w-7xl mx-auto px-6 py-4">
                 <div className="flex items-center justify-between">
                     <div className="flex items-center gap-4">
@@ -36,7 +47,7 @@ export default function Navbar() {
                             initial={{ opacity: 0 }}
                             animate={{ opacity: 1 }}
                             transition={{ delay: 0.2 }}
-                            className="text-lg font-bold text-darkText tracking-tight block"
+                            className="text-lg font-bold text-darkText tracking-tight block truncate max-w-[180px] sm:max-w-none"
                         >
                             The Making of an Engineer
                         </motion.div>
@@ -85,24 +96,26 @@ export default function Navbar() {
                 </div>
 
                 {/* Mobile Navigation */}
-                {isOpen && (
-                    <motion.div
-                        initial={{ opacity: 0, height: 0 }}
-                        animate={{ opacity: 1, height: 'auto' }}
-                        exit={{ opacity: 0, height: 0 }}
-                        className="md:hidden mt-4 pb-4 space-y-3 border-t border-softGray pt-4"
-                    >
-                        {navLinks.map((link) => (
-                            <button
-                                key={link.id}
-                                onClick={() => scrollToChapter(link.id)}
-                                className="block w-full text-left px-4 py-2 text-sm font-medium text-lightText hover:text-darkText hover:bg-softGray rounded-lg transition-colors"
-                            >
-                                {link.label}
-                            </button>
-                        ))}
-                    </motion.div>
-                )}
+                <AnimatePresence>
+                    {isOpen && (
+                        <motion.div
+                            initial={{ opacity: 0, height: 0 }}
+                            animate={{ opacity: 1, height: 'auto' }}
+                            exit={{ opacity: 0, height: 0 }}
+                            className="md:hidden mt-4 pb-4 space-y-3 border-t border-softGray pt-4 overflow-hidden"
+                        >
+                            {navLinks.map((link) => (
+                                <button
+                                    key={link.id}
+                                    onClick={() => scrollToChapter(link.id)}
+                                    className="block w-full text-left px-4 py-2 text-sm font-medium text-lightText hover:text-darkText hover:bg-softGray rounded-lg transition-colors"
+                                >
+                                    {link.label}
+                                </button>
+                            ))}
+                        </motion.div>
+                    )}
+                </AnimatePresence>
             </div>
         </motion.nav>
     );

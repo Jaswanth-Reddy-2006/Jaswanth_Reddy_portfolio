@@ -199,9 +199,43 @@ export default function ChapterTwo({ projects }: ChapterTwoProps) {
                                                 ))}
                                             </div>
 
-                                            <p className="text-lightText mb-6 text-sm leading-relaxed">
-                                                {project.description}
-                                            </p>
+                                            <div className="text-lightText mb-6 text-sm leading-relaxed">
+                                                {project.description.includes('\n') ? (
+                                                    <div className="space-y-4">
+                                                        {project.description.split('\n').map((line, i) => {
+                                                            const isBullet = line.trim().startsWith('-');
+                                                            const content = isBullet ? line.trim().substring(1).trim() : line.trim();
+
+                                                            if (!content) return null;
+
+                                                            return (
+                                                                <div key={i} className={`flex items-start gap-2 ${isBullet ? 'ml-2' : ''}`}>
+                                                                    {isBullet && <span className="text-mutedBlue font-bold mt-1.5 w-1 h-1 rounded-full bg-mutedBlue flex-shrink-0" />}
+                                                                    <span>
+                                                                        {content.split(/(\*\*.*?\*\*)/).map((part, j) =>
+                                                                            part.startsWith('**') && part.endsWith('**') ? (
+                                                                                <span key={j} className="text-mutedBlue font-bold">{part.slice(2, -2)}</span>
+                                                                            ) : (
+                                                                                part
+                                                                            )
+                                                                        )}
+                                                                    </span>
+                                                                </div>
+                                                            );
+                                                        })}
+                                                    </div>
+                                                ) : (
+                                                    <p>
+                                                        {project.description.split(/(\*\*.*?\*\*)/).map((part, i) =>
+                                                            part.startsWith('**') && part.endsWith('**') ? (
+                                                                <span key={i} className="text-mutedBlue font-bold">{part.slice(2, -2)}</span>
+                                                            ) : (
+                                                                part
+                                                            )
+                                                        )}
+                                                    </p>
+                                                )}
+                                            </div>
 
                                             <div className="flex items-center justify-between gap-4 mt-auto">
                                                 <div className="flex flex-wrap gap-1.5">
