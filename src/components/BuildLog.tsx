@@ -16,11 +16,11 @@ export default function BuildLog({ items }: BuildLogProps) {
                     initial={{ opacity: 0, y: 20 }}
                     whileInView={{ opacity: 1, y: 0 }}
                     viewport={{ once: true }}
-                    className="flex flex-col md:flex-row md:items-end gap-4 mb-20"
+                    className="flex flex-col md:flex-row md:items-end gap-3 mb-12 md:mb-20"
                 >
                     <div>
-                        <h2 className="text-4xl font-bold text-darkText tracking-tight mb-2">Build <span className="text-mutedBlue italic serif">Log</span></h2>
-                        <p className="text-lightText font-light">Documenting the iterative process of system refinement.</p>
+                        <h2 className="text-2xl md:text-4xl font-bold text-darkText tracking-tight mb-2 px-4 md:px-0">Build <span className="text-mutedBlue italic serif">Log</span></h2>
+                        <p className="text-sm md:text-base text-lightText font-light px-4 md:px-0">Documenting the iterative process of system refinement.</p>
                     </div>
                     <div className="hidden md:block h-px flex-1 bg-softGray mb-2 mx-8" />
                     <div className="flex items-center gap-3 mb-2">

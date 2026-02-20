@@ -1,5 +1,5 @@
 import { motion, useScroll, useSpring, AnimatePresence } from 'framer-motion';
-import { Menu, X, Eye, EyeOff } from 'lucide-react';
+import { Sun, Crosshair, Menu, X } from 'lucide-react';
 import { useState } from 'react';
 import { useSettings } from '../context/SettingsContext';
 
@@ -12,8 +12,8 @@ const navLinks = [
 ];
 
 export default function Navbar() {
+    const { isSalaarMode, toggleSalaarMode } = useSettings();
     const [isOpen, setIsOpen] = useState(false);
-    const { isMinimalView, toggleMinimalView } = useSettings();
     const { scrollYProgress } = useScroll();
 
     const scaleX = useSpring(scrollYProgress, {
@@ -34,58 +34,61 @@ export default function Navbar() {
         <motion.nav
             initial={{ y: -100 }}
             animate={{ y: 0 }}
-            className="fixed top-0 left-0 right-0 z-50 bg-warmWhite/90 backdrop-blur-md border-b border-softGray transition-all duration-300"
+            className={`fixed top-0 left-0 right-0 z-50 backdrop-blur-md border-b transition-all duration-700 ${isSalaarMode
+                ? 'bg-black/95 border-red-900/40 text-white'
+                : 'bg-warmWhite/90 border-softGray text-darkText'
+                }`}
         >
             <motion.div
-                className="absolute top-0 left-0 right-0 h-1 bg-mutedBlue origin-left z-[60]"
+                className={`absolute top-0 left-0 right-0 h-1 origin-left z-[60] ${isSalaarMode ? 'bg-red-600' : 'bg-mutedBlue'}`}
                 style={{ scaleX }}
             />
             <div className="max-w-7xl mx-auto px-6 py-4">
                 <div className="flex items-center justify-between">
-                    <div className="flex items-center gap-4">
-                        <motion.div
-                            initial={{ opacity: 0 }}
-                            animate={{ opacity: 1 }}
-                            transition={{ delay: 0.2 }}
-                            className="text-lg font-bold text-darkText tracking-tight block truncate max-w-[180px] sm:max-w-none"
-                        >
+                    <div className="flex items-center gap-2 group cursor-pointer" onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}>
+                        <span className={`hidden sm:inline-block text-sm md:text-lg font-bold tracking-tight transition-colors duration-700 ${isSalaarMode ? 'text-white' : 'text-darkText'}`}>
                             The Making of an Engineer
-                        </motion.div>
+                        </span>
                     </div>
 
+                    {/* Theme Toggle Button (Centered) */}
+                    <motion.button
+                        whileHover={{ scale: 1.05 }}
+                        whileTap={{ scale: 0.95 }}
+                        onClick={toggleSalaarMode}
+                        className={`flex items-center gap-2 px-4 py-2 rounded-full font-bold text-xs uppercase tracking-widest transition-all duration-700 shadow-lg ${isSalaarMode
+                            ? 'bg-red-700 text-white shadow-red-900/40 border border-red-500/50'
+                            : 'bg-darkText text-white shadow-darkText/10'
+                            }`}
+                    >
+                        {isSalaarMode ? (
+                            <>
+                                <Sun size={14} className="animate-pulse" />
+                                <span>Zen Mode</span>
+                            </>
+                        ) : (
+                            <>
+                                <Crosshair size={14} className="animate-pulse" />
+                                <span>Salaar Mode</span>
+                            </>
+                        )}
+                    </motion.button>
                     {/* Desktop Controls */}
                     <div className="hidden md:flex items-center gap-8">
                         {navLinks.map((link) => (
                             <button
                                 key={link.id}
                                 onClick={() => scrollToChapter(link.id)}
-                                className="text-sm font-medium text-lightText hover:text-darkText transition-colors"
+                                className={`text-sm font-medium transition-colors duration-700 ${isSalaarMode ? 'text-white/60 hover:text-white' : 'text-lightText hover:text-darkText'
+                                    }`}
                             >
                                 {link.label}
                             </button>
                         ))}
-
-                        <button
-                            onClick={toggleMinimalView}
-                            className={`flex items-center gap-2 px-3 py-1.5 rounded-full text-xs font-bold transition-all ${isMinimalView
-                                ? 'bg-mutedBlue text-white'
-                                : 'bg-softGray/50 text-lightText hover:bg-softGray'
-                                }`}
-                            title={isMinimalView ? "Disable Minimal View" : "Enable Minimal View"}
-                        >
-                            {isMinimalView ? <EyeOff size={14} /> : <Eye size={14} />}
-                            {isMinimalView ? "Minimal On" : "Minimal Off"}
-                        </button>
                     </div>
 
                     {/* Mobile Menu Button */}
                     <div className="flex items-center gap-4 md:hidden">
-                        <button
-                            onClick={toggleMinimalView}
-                            className={`p-2 rounded-full transition-all ${isMinimalView ? 'text-mutedBlue' : 'text-lightText'}`}
-                        >
-                            {isMinimalView ? <EyeOff size={20} /> : <Eye size={20} />}
-                        </button>
                         <button
                             onClick={() => setIsOpen(!isOpen)}
                             className="p-2 text-darkText"

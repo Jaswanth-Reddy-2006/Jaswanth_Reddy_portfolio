@@ -15,13 +15,13 @@ export default function RealWorldExperience({ experience }: RealWorldExperienceP
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true }}
                 transition={{ duration: 0.6 }}
-                className="mb-10 md:mb-16"
+                className="mb-8 md:mb-16"
             >
-                <h2 className="text-2xl md:text-4xl font-bold text-darkText mb-4 tracking-tight flex items-center gap-3">
-                    <Briefcase className="text-mutedBlue" size={28} />
+                <h2 className="text-xl md:text-4xl font-bold text-darkText mb-4 tracking-tight flex items-center gap-3">
+                    <Briefcase className="text-mutedBlue" size={24} />
                     Real-World Experience
                 </h2>
-                <div className="h-1 w-20 bg-mutedBlue rounded-full" />
+                <div className="h-1 w-16 bg-mutedBlue rounded-full" />
             </motion.div>
 
             <HighlightGroup className="space-y-8">

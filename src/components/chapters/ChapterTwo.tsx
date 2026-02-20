@@ -1,6 +1,9 @@
 import { motion, AnimatePresence } from 'framer-motion';
-import { ExternalLink, X, ArrowRight, ArrowLeft } from 'lucide-react';
+import { ArrowRight, ArrowLeft, Crosshair } from 'lucide-react';
 import { useState } from 'react';
+import { useSettings } from '../../context/SettingsContext';
+import { Canvas } from '@react-three/fiber';
+import ProjectProjector from '../salaar/ProjectProjector';
 import type { Project } from '../../data/portfolio';
 import { HighlightGroup, HighlightItem } from '../SmartHighlight';
 
@@ -9,6 +12,7 @@ interface ChapterTwoProps {
 }
 
 export default function ChapterTwo({ projects }: ChapterTwoProps) {
+    const { isSalaarMode } = useSettings();
     const [focusedId, setFocusedId] = useState<string | null>(null);
     const [caseStudyId, setCaseStudyId] = useState<string | null>(null);
 
@@ -28,11 +32,11 @@ export default function ChapterTwo({ projects }: ChapterTwoProps) {
 
     if (caseStudyId && activeProject) {
         return (
-            <section className="min-h-screen px-6 py-20 bg-warmWhite transition-all duration-700">
+            <section className={`min-h-screen px-6 py-20 transition-all duration-700 ${isSalaarMode ? 'bg-[#0a0000]' : 'bg-warmWhite'}`}>
                 <div className="max-w-4xl mx-auto">
                     <button
                         onClick={closeCaseStudy}
-                        className="flex items-center gap-2 text-mutedBlue hover:text-darkText transition-colors mb-12 group"
+                        className={`flex items-center gap-2 transition-colors mb-12 group ${isSalaarMode ? 'text-red-500' : 'text-mutedBlue'}`}
                     >
                         <ArrowLeft size={20} className="group-hover:-translate-x-1 transition-transform" />
                         <span>Back to Timeline</span>
@@ -99,28 +103,45 @@ export default function ChapterTwo({ projects }: ChapterTwoProps) {
     }
 
     return (
-        <section id="chapter-2" className="min-h-screen px-6 py-20 bg-gradient-to-b from-warmWhite to-softGray relative">
+        <section id="chapter-2" className={`min-h-screen px-6 py-20 transition-all duration-1000 relative overflow-hidden ${isSalaarMode
+            ? 'bg-[#0a0000]'
+            : 'bg-gradient-to-b from-warmWhite to-softGray'
+            }`}>
+            {isSalaarMode && (
+                <div className="absolute inset-0 z-0 pointer-events-none opacity-40">
+                    <div className="absolute top-0 left-0 w-full h-full bg-[linear-gradient(to_right,#55000012_1px,transparent_1px),linear-gradient(to_bottom,#55000012_1px,transparent_1px)] bg-[size:40px_40px]" />
+                    <div className="absolute inset-0">
+                        <Canvas dpr={[1, 2]}>
+                            <ProjectProjector />
+                        </Canvas>
+                    </div>
+                </div>
+            )}
             <div className="max-w-6xl mx-auto">
                 <motion.div
                     initial={{ opacity: 0, y: 30 }}
                     whileInView={{ opacity: 1, y: 0 }}
                     viewport={{ once: true }}
                     transition={{ duration: 0.8 }}
-                    className="text-center mb-16"
+                    className="text-center mb-12 md:mb-24 px-4"
                 >
-                    <h2 className="text-4xl md:text-5xl font-bold text-darkText mb-4">
-                        The Builder <span className="text-deepEmerald">Phase</span>
+                    <h2 className={`text-3xl sm:text-4xl md:text-6xl font-bold mb-6 tracking-tight transition-colors duration-700 ${isSalaarMode ? 'text-white' : 'text-darkText'
+                        }`}>
+                        {isSalaarMode ? 'The Battle' : 'The Builder'} <span className={`${isSalaarMode ? 'text-red-600 italic' : 'text-deepEmerald italic serif'}`}>{isSalaarMode ? 'Grid' : 'Phase'}</span>
                     </h2>
-                    <p className="text-lg text-lightText max-w-2xl mx-auto">
-                        Every project is a milestone in the journey of learning and creating
+                    <p className={`text-base sm:text-lg md:text-xl max-w-2xl mx-auto leading-relaxed transition-colors duration-700 ${isSalaarMode ? 'text-white/40 font-mono' : 'text-lightText/60'
+                        }`}>
+                        {isSalaarMode
+                            ? 'Computational warfare and solutions forged in blood and grit.'
+                            : 'Architecting digital solutions with technical precision and creative intent.'}
                     </p>
                 </motion.div>
 
                 <div className="relative">
-                    {/* Timeline line - hidden on mobile */}
-                    <div className="hidden md:block absolute left-1/2 top-0 bottom-0 w-0.5 bg-mutedBlue/20" />
+                    {/* Timeline line - hidden on small screens */}
+                    <div className={`hidden lg:block absolute left-1/2 top-0 bottom-0 w-[1px] ${isSalaarMode ? 'bg-gradient-to-b from-transparent via-red-900/40 to-transparent' : 'bg-gradient-to-b from-transparent via-mutedBlue/20 to-transparent'}`} />
 
-                    <HighlightGroup className="space-y-12 md:space-y-16">
+                    <HighlightGroup className="space-y-12 md:space-y-32">
                         {projects.map((project, index) => {
                             const isFocused = focusedId === project.id;
                             const isOtherFocused = focusedId && focusedId !== project.id;
@@ -128,142 +149,152 @@ export default function ChapterTwo({ projects }: ChapterTwoProps) {
                             return (
                                 <motion.div
                                     key={project.id}
-                                    initial={{ opacity: 0, x: index % 2 === 0 ? -50 : 50 }}
-                                    whileInView={{ opacity: 1, x: 0 }}
-                                    viewport={{ once: true }}
-                                    transition={{ duration: 0.6, delay: index * 0.1 }}
+                                    initial={{ opacity: 0, y: 30 }}
+                                    whileInView={{ opacity: 1, y: 0 }}
+                                    viewport={{ once: true, margin: "-100px" }}
+                                    transition={{ duration: 0.8, delay: index * 0.1 }}
                                     animate={{
                                         opacity: isOtherFocused ? 0.2 : 1,
                                         scale: isFocused ? 1.02 : 1,
-                                        filter: isOtherFocused ? 'grayscale(30%)' : 'grayscale(0%)'
                                     }}
-                                    className={`relative flex flex-col md:flex-row items-center gap-8 ${index % 2 === 0 ? 'md:flex-row-reverse' : ''} ${isFocused ? 'z-50' : 'z-10'}`}
+                                    className={`relative flex flex-col lg:flex-row items-center gap-8 ${index % 2 === 0 ? 'lg:flex-row-reverse' : ''} ${isFocused ? 'z-50' : 'z-10'}`}
                                 >
                                     {/* Timeline dot */}
-                                    <div className={`hidden md:block absolute left-1/2 top-8 w-4 h-4 rounded-full border-4 border-warmWhite transform -translate-x-1/2 transition-all duration-300 ${isFocused ? 'bg-deepEmerald scale-150' : 'bg-mutedBlue'}`} />
+                                    <div className={`hidden lg:block absolute left-1/2 top-1/2 w-3 h-3 rounded-full border border-warmWhite transform -translate-x-1/2 -translate-y-1/2 transition-all duration-500 ${isFocused ? (isSalaarMode ? 'bg-red-700 scale-[2.5] shadow-[0_0_15px_rgba(153,0,0,0.5)]' : 'bg-deepEmerald scale-[2.5] shadow-[0_0_15px_rgba(45,95,79,0.5)]') : (isSalaarMode ? 'bg-red-900/40 hover:scale-150' : 'bg-mutedBlue/30 hover:scale-150')}`} />
 
-                                    {/* Project Card */}
-                                    <div className="w-full md:w-[calc(50%-2rem)]">
+                                    <div className="w-full lg:w-[calc(50%-3rem)] relative group">
+                                        {isSalaarMode && (
+                                            <div className="absolute -inset-[1px] bg-gradient-to-r from-red-900/50 to-transparent rounded-[2rem] opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
+                                        )}
                                         <HighlightItem
                                             id={project.id}
-                                            className={`bg-white rounded-2xl p-6 border relative group h-full transition-shadow duration-500 ${isFocused ? 'shadow-2xl border-mutedBlue/30' : 'shadow-soft-lg border-softGray cursor-pointer'}`}
+                                            className={`rounded-[2rem] p-6 sm:p-8 md:p-10 border relative h-full transition-all duration-500 overflow-hidden ${isSalaarMode
+                                                ? `bg-black/90 backdrop-blur-xl border-red-900/30 ${isFocused ? 'shadow-[0_0_30px_rgba(153,0,0,0.2)] border-red-800/50' : 'hover:border-red-900/50'}`
+                                                : `bg-white/80 backdrop-blur-md border-softGray/50 ${isFocused ? 'shadow-2xl border-mutedBlue/30' : 'shadow-soft-lg hover:border-mutedBlue/20'}`
+                                                } cursor-pointer`}
                                             onClick={() => handleCardClick(project.id)}
                                         >
-                                            {isFocused && (
-                                                <button
-                                                    onClick={(e) => {
-                                                        e.stopPropagation();
-                                                        closeFocus();
-                                                    }}
-                                                    className="absolute -top-3 -right-3 p-1.5 bg-darkText text-warmWhite rounded-full shadow-lg hover:bg-mutedBlue transition-colors z-[60]"
-                                                >
-                                                    <X size={16} />
-                                                </button>
+                                            {isSalaarMode && (
+                                                <div className="absolute top-0 right-0 p-4 opacity-10 group-hover:opacity-30 transition-opacity">
+                                                    <Crosshair size={40} className="text-red-700" />
+                                                </div>
                                             )}
-
-                                            <div className="flex items-start justify-between mb-3">
-                                                <div className="flex items-center gap-2">
-                                                    <span className="text-sm font-semibold text-mutedBlue">{project.year}</span>
+                                            <div className="flex flex-col h-full">
+                                                <div className="flex items-center justify-between mb-6">
+                                                    <div className="flex items-center gap-3">
+                                                        <span className="text-xs font-mono font-bold text-mutedBlue/40 uppercase tracking-widest leading-none">
+                                                            P.0{index + 1}
+                                                        </span>
+                                                        <span className="w-1 h-1 rounded-full bg-softGray" />
+                                                        <span className="text-xs font-bold text-lightText/60">{project.year}</span>
+                                                    </div>
                                                     {project.impactBadge && (
-                                                        <span className="text-[10px] bg-deepEmerald/5 text-deepEmerald px-2 py-0.5 rounded-full font-bold uppercase tracking-wider">
+                                                        <span className="text-[9px] font-bold text-deepEmerald uppercase tracking-widest bg-deepEmerald/5 px-3 py-1.5 rounded-full border border-deepEmerald/10">
                                                             {project.impactBadge}
                                                         </span>
                                                     )}
                                                 </div>
-                                                <div className="flex items-center gap-2">
-                                                    {project.link && (
-                                                        <a
-                                                            href={project.link}
-                                                            target="_blank"
-                                                            rel="noopener noreferrer"
-                                                            className="text-mutedBlue hover:text-darkText transition-colors"
-                                                            onClick={(e) => e.stopPropagation()}
-                                                        >
-                                                            <ExternalLink size={14} />
-                                                        </a>
-                                                    )}
-                                                </div>
-                                            </div>
 
-                                            <h3 className="text-xl font-bold text-darkText mb-2">
-                                                {project.title}
-                                            </h3>
+                                                <h3 className={`text-2xl sm:text-3xl font-bold mb-4 transition-colors duration-500 ${isSalaarMode ? 'text-white' : 'text-darkText group-hover:text-mutedBlue'
+                                                    }`}>
+                                                    {isSalaarMode ? `// MISSION_${project.title.split(' ').join('_').toUpperCase()}` : project.title}
+                                                </h3>
 
-                                            {/* Metrics Layer */}
-                                            <div className="flex gap-4 mb-4">
-                                                {project.metrics?.map(m => (
-                                                    <div key={m.label} className="border-l-2 border-softGray pl-2">
-                                                        <div className="text-[10px] font-bold text-mutedBlue uppercase tracking-tighter">{m.label}</div>
-                                                        <div className="text-xs font-mono text-darkText font-bold">{m.value}</div>
-                                                    </div>
-                                                ))}
-                                            </div>
-
-                                            <div className="text-lightText mb-6 text-sm leading-relaxed">
-                                                {project.description.includes('\n') ? (
-                                                    <div className="space-y-4">
-                                                        {project.description.split('\n').map((line, i) => {
-                                                            const isBullet = line.trim().startsWith('-');
-                                                            const content = isBullet ? line.trim().substring(1).trim() : line.trim();
-
-                                                            if (!content) return null;
-
-                                                            return (
-                                                                <div key={i} className={`flex items-start gap-2 ${isBullet ? 'ml-2' : ''}`}>
-                                                                    {isBullet && <span className="text-mutedBlue font-bold mt-1.5 w-1 h-1 rounded-full bg-mutedBlue flex-shrink-0" />}
-                                                                    <span>
-                                                                        {content.split(/(\*\*.*?\*\*)/).map((part, j) =>
-                                                                            part.startsWith('**') && part.endsWith('**') ? (
-                                                                                <span key={j} className="text-mutedBlue font-bold">{part.slice(2, -2)}</span>
-                                                                            ) : (
-                                                                                part
-                                                                            )
-                                                                        )}
-                                                                    </span>
-                                                                </div>
-                                                            );
-                                                        })}
-                                                    </div>
-                                                ) : (
-                                                    <p>
-                                                        {project.description.split(/(\*\*.*?\*\*)/).map((part, i) =>
-                                                            part.startsWith('**') && part.endsWith('**') ? (
-                                                                <span key={i} className="text-mutedBlue font-bold">{part.slice(2, -2)}</span>
-                                                            ) : (
-                                                                part
-                                                            )
-                                                        )}
-                                                    </p>
-                                                )}
-                                            </div>
-
-                                            <div className="flex items-center justify-between gap-4 mt-auto">
-                                                <div className="flex flex-wrap gap-1.5">
-                                                    {project.techStack.slice(0, 3).map((tech) => (
-                                                        <span
-                                                            key={tech}
-                                                            className="px-2 py-0.5 bg-softGray/30 text-[9px] font-mono text-darkText rounded"
-                                                        >
-                                                            {tech}
-                                                        </span>
+                                                <div className={`flex flex-wrap gap-6 mb-8 py-4 border-y transition-colors duration-700 ${isSalaarMode ? 'border-red-900/30' : 'border-softGray/30'
+                                                    }`}>
+                                                    {project.metrics?.map(m => (
+                                                        <div key={m.label} className="min-w-[80px]">
+                                                            <div className={`text-[9px] font-bold uppercase tracking-tighter mb-1 transition-colors duration-700 ${isSalaarMode ? 'text-red-600' : 'text-mutedBlue/50'
+                                                                }`}>{m.label}</div>
+                                                            <div className={`text-lg font-bold font-mono leading-none transition-colors duration-700 ${isSalaarMode ? 'text-white' : 'text-darkText'
+                                                                }`}>{m.value}</div>
+                                                        </div>
                                                     ))}
                                                 </div>
-                                                <button
-                                                    onClick={(e) => {
-                                                        e.stopPropagation();
-                                                        toggleCaseStudy(project.id);
-                                                    }}
-                                                    className="text-[11px] font-bold text-mutedBlue hover:text-darkText transition-colors flex items-center gap-1 group/btn"
-                                                >
-                                                    Case Study
-                                                    <ArrowRight size={12} className="group-hover/btn:translate-x-0.5 transition-transform" />
-                                                </button>
+
+                                                <div className="text-lightText/70 mb-8 text-base leading-relaxed">
+                                                    {project.description.includes('\n') ? (
+                                                        <div className="space-y-4">
+                                                            {project.description.split('\n').filter(l => l.trim()).map((line, i) => {
+                                                                const isBullet = line.trim().startsWith('-');
+                                                                const content = isBullet ? line.trim().substring(1).trim() : line.trim();
+                                                                return (
+                                                                    <div key={i} className={`flex items-start gap-3 ${isBullet ? 'pl-2' : ''}`}>
+                                                                        {isBullet && <div className="mt-2.5 w-1 h-1 rounded-full bg-mutedBlue/40 flex-shrink-0" />}
+                                                                        <span className="flex-1">
+                                                                            {content.split(/(\*\*.*?\*\*)/).map((part, j) =>
+                                                                                part.startsWith('**') && part.endsWith('**') ? (
+                                                                                    <span key={j} className="text-darkText font-bold">{part.slice(2, -2)}</span>
+                                                                                ) : (
+                                                                                    part
+                                                                                )
+                                                                            )}
+                                                                        </span>
+                                                                    </div>
+                                                                );
+                                                            })}
+                                                        </div>
+                                                    ) : (
+                                                        <p>
+                                                            {project.description.split(/(\*\*.*?\*\*)/).map((part, i) =>
+                                                                part.startsWith('**') && part.endsWith('**') ? (
+                                                                    <span key={i} className="text-darkText font-bold">{part.slice(2, -2)}</span>
+                                                                ) : (
+                                                                    part
+                                                                )
+                                                            )}
+                                                        </p>
+                                                    )}
+                                                </div>
+
+                                                <div className="mt-auto pt-6 border-t border-softGray/30 flex items-center justify-between gap-4">
+                                                    <div className="flex flex-wrap gap-2">
+                                                        {project.techStack.slice(0, 3).map((tech) => (
+                                                            <span
+                                                                key={tech}
+                                                                className="px-3 py-1 bg-warmWhite text-[10px] font-mono font-bold text-lightText/80 rounded-md border border-softGray/30"
+                                                            >
+                                                                {tech}
+                                                            </span>
+                                                        ))}
+                                                    </div>
+                                                    <button
+                                                        onClick={(e) => {
+                                                            e.stopPropagation();
+                                                            toggleCaseStudy(project.id);
+                                                        }}
+                                                        className={`h-10 px-4 rounded-xl text-xs font-bold transition-all duration-300 flex items-center gap-2 group/cta shadow-lg ${isSalaarMode
+                                                            ? 'bg-red-700 text-white hover:bg-white hover:text-red-700'
+                                                            : 'bg-darkText text-white hover:bg-mutedBlue shadow-darkText/10'
+                                                            }`}
+                                                    >
+                                                        {isSalaarMode ? 'Initialize Intel' : 'Details'}
+                                                        <ArrowRight size={14} className="group-hover/cta:translate-x-1 transition-transform" />
+                                                    </button>
+                                                </div>
                                             </div>
                                         </HighlightItem>
                                     </div>
 
-                                    {/* Spacer for timeline */}
-                                    <div className="hidden md:block w-[calc(50%-2rem)]" />
+                                    {/* Decorative Spacer Card (Desktop only) */}
+                                    <div className="hidden lg:block w-[calc(50%-3rem)] px-12">
+                                        <div className="opacity-10 font-mono text-[10px] space-y-2 pointer-events-none">
+                                            <div className="flex gap-4">
+                                                <span className="text-mutedBlue">[STATUS]</span>
+                                                <span className="text-darkText">DEPLOYED // STABLE</span>
+                                            </div>
+                                            <div className="flex gap-4">
+                                                <span className="text-mutedBlue">[MODULE]</span>
+                                                <span className="text-darkText">ENGINE_v.08.12</span>
+                                            </div>
+                                            <div className="w-full h-[1px] bg-darkText/20 my-4" />
+                                            <div className="text-[8px] leading-3 uppercase tracking-widest pl-4 border-l border-mutedBlue/30">
+                                                Sub-system link established.<br />
+                                                Data integrity verified.<br />
+                                                Routing complete.
+                                            </div>
+                                        </div>
+                                    </div>
                                 </motion.div>
                             );
                         })}
@@ -271,7 +302,6 @@ export default function ChapterTwo({ projects }: ChapterTwoProps) {
                 </div>
             </div>
 
-            {/* Focus Overlay - Subtle & Inline feeling */}
             <AnimatePresence>
                 {focusedId && (
                     <motion.div
@@ -279,7 +309,7 @@ export default function ChapterTwo({ projects }: ChapterTwoProps) {
                         animate={{ opacity: 1 }}
                         exit={{ opacity: 0 }}
                         onClick={closeFocus}
-                        className="fixed inset-0 bg-darkText/10 backdrop-blur-[1px] z-40 transition-colors pointer-events-auto"
+                        className="fixed inset-0 bg-warmWhite/40 backdrop-blur-sm z-40 transition-colors cursor-crosshair"
                         aria-hidden="true"
                     />
                 )}

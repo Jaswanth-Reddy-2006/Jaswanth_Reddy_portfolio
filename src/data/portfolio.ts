@@ -229,7 +229,6 @@ export const portfolioData: PortfolioData = {
             username: 'Jaswanth-Reddy-2006',
             metrics: {
                 repos: 24,
-                stars: 45,
                 contributions: 1200,
                 followers: 50
             }

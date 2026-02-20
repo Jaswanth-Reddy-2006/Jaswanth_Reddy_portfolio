@@ -10,14 +10,27 @@ import FloatingBackground from './FloatingBackground';
 import CustomCursor from './CustomCursor';
 import { portfolioData } from '../data/portfolio';
 import { motion, useScroll, useTransform, useSpring } from 'framer-motion';
-import CoreValues from './CoreValues';
 import SocialTerminal from './SocialTerminal';
 import PortfolioHUD from './PortfolioHUD';
+import SalaarBackground from './SalaarBackground';
+import SalaarHUD from './salaar/SalaarHUD';
+import SalaarActivation from './salaar/SalaarActivation';
 import { useSettings } from '../context/SettingsContext';
+import { AnimatePresence } from 'framer-motion';
+import { useState, useEffect } from 'react';
 
 export default function FullPortfolio() {
+    const { isSalaarMode } = useSettings();
+    const [isActivating, setIsActivating] = useState(false);
     const { scrollYProgress } = useScroll();
-    const { isMinimalView } = useSettings();
+
+    useEffect(() => {
+        if (isSalaarMode) {
+            setIsActivating(true);
+        } else {
+            setIsActivating(false);
+        }
+    }, [isSalaarMode]);
 
     const smoothProgress = useSpring(scrollYProgress, {
         stiffness: 100,
@@ -25,26 +38,55 @@ export default function FullPortfolio() {
         restDelta: 0.001
     });
 
-    // Subtle background evolution logic
     const backgroundColor = useTransform(
         smoothProgress,
         [0, 0.2, 0.4, 0.6, 0.8, 1],
-        isMinimalView
-            ? ["#F8F6F2", "#F8F6F2", "#F8F6F2", "#F8F6F2", "#F8F6F2", "#F8F6F2"] // Static on minimal
+        isSalaarMode
+            ? ["#0a0000", "#1a0000", "#2b0000", "#3c0000", "#4d0000", "#5e0000"]
             : ["#F8F6F2", "#F1EFE7", "#EBE9E0", "#E5E3D9", "#DFDDD2", "#D9D7CC"]
     );
 
     return (
         <motion.div
             style={{ backgroundColor }}
-            className="min-h-screen transition-colors duration-1000 relative"
+            className={`min-h-screen transition-colors duration-1000 relative ${isSalaarMode ? 'text-white' : 'text-darkText'}`}
         >
-            <div className="grainy-overlay" />
+            <AnimatePresence>
+                {isActivating && (
+                    <SalaarActivation onComplete={() => setIsActivating(false)} />
+                )}
+            </AnimatePresence>
+
+            <div className={`grainy-overlay ${isSalaarMode ? 'opacity-[0.03]' : ''}`} />
             <CustomCursor />
-            <FloatingBackground />
+
+            <AnimatePresence mode="wait">
+                {isSalaarMode ? (
+                    <motion.div
+                        key="salaar-bg"
+                        initial={{ opacity: 0 }}
+                        animate={{ opacity: 1 }}
+                        exit={{ opacity: 0 }}
+                        transition={{ duration: 1 }}
+                    >
+                        <SalaarBackground />
+                    </motion.div>
+                ) : (
+                    <motion.div
+                        key="zen-bg"
+                        initial={{ opacity: 0 }}
+                        animate={{ opacity: 1 }}
+                        exit={{ opacity: 0 }}
+                        transition={{ duration: 1 }}
+                    >
+                        <FloatingBackground />
+                    </motion.div>
+                )}
+            </AnimatePresence>
 
             <Navbar />
             <PortfolioHUD />
+            <SalaarHUD />
 
             <main className="max-w-6xl mx-auto px-6 py-20 space-y-40">
                 {/* Chapter 1: Introduction */}
@@ -64,9 +106,6 @@ export default function FullPortfolio() {
                         introduction={portfolioData.introduction}
                     />
                 </motion.section>
-
-                {/* Core Engineering Philosophies */}
-                <CoreValues values={portfolioData.coreValues || []} />
 
                 {/* Chapter 2: Work & Case Studies */}
                 <motion.section
@@ -137,7 +176,10 @@ export default function FullPortfolio() {
                 </motion.section>
             </main>
 
-            <footer className="py-32 px-6 border-t border-softGray bg-white/30 backdrop-blur-sm">
+            <footer className={`py-32 px-6 border-t transition-all duration-1000 ${isSalaarMode
+                ? 'bg-black/60 border-red-900/20'
+                : 'bg-white/30 border-softGray'
+                } backdrop-blur-sm`}>
                 <div className="max-w-4xl mx-auto text-center">
                     <motion.div
                         initial={{ opacity: 0, y: 20 }}
@@ -145,10 +187,10 @@ export default function FullPortfolio() {
                         viewport={{ once: true }}
                         transition={{ duration: 0.8 }}
                     >
-                        <h2 className="text-3xl md:text-4xl font-bold text-darkText mb-6 tracking-tight">
+                        <h2 className="text-2xl md:text-4xl font-bold text-darkText mb-6 tracking-tight px-4">
                             Currently building scalable web systems.
                         </h2>
-                        <p className="text-xl text-lightText font-light mb-12 italic max-w-2xl mx-auto leading-relaxed">
+                        <p className="text-base md:text-xl text-lightText font-light mb-12 italic max-w-2xl mx-auto leading-relaxed px-6">
                             Open to internships and backend/full-stack roles.
                         </p>
                         <div className="flex flex-col items-center gap-6">
@@ -167,15 +209,17 @@ export default function FullPortfolio() {
                                 Available for Internship 2026
                             </div>
                             <div className="flex flex-col items-center gap-2 mt-8 opacity-40">
-                                <span className="text-[9px] font-mono uppercase tracking-[0.3em]">System Live Matrix</span>
+                                <span className="text-[9px] font-mono uppercase tracking-[0.3em]">{isSalaarMode ? 'SALAAR SIGNAL MATRIX' : 'System Live Matrix'}</span>
                                 <motion.div
                                     animate={{ opacity: [0.3, 1, 0.3] }}
                                     transition={{ duration: 3, repeat: Infinity }}
-                                    className="flex items-center gap-2 text-[9px] font-mono text-mutedBlue"
+                                    className={`flex items-center gap-2 text-[9px] font-mono ${isSalaarMode ? 'text-red-600' : 'text-mutedBlue'}`}
                                 >
-                                    <span className="w-1.5 h-1.5 bg-mutedBlue rounded-full" />
+                                    <span className={`w-1.5 h-1.5 rounded-full ${isSalaarMode ? 'bg-red-600' : 'bg-mutedBlue'}`} />
                                     <span>[LOG]: {
-                                        ['Optimizing kernel...', 'Cache warmed.', 'Routing verified.', 'Buffer flushed.', 'Signal status: 100%'][Math.floor((Date.now() / 3000) % 5)]
+                                        isSalaarMode
+                                            ? ['Sharpening blades...', 'Ammo checked.', 'Target locked.', 'Ceasefire broken.', 'Blood status: 100%'][Math.floor((Date.now() / 3000) % 5)]
+                                            : ['Optimizing kernel...', 'Cache warmed.', 'Routing verified.', 'Buffer flushed.', 'Signal status: 100%'][Math.floor((Date.now() / 3000) % 5)]
                                     }</span>
                                 </motion.div>
                             </div>

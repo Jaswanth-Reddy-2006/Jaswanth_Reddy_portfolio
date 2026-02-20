@@ -102,6 +102,7 @@ export default function FloatingBackground() {
                 style={{ y: y2 }}
                 className="absolute top-[40%] right-[10%] w-[500px] h-[500px] bg-deepEmerald/5 rounded-full blur-[120px]"
             />
+
             <motion.div
                 style={{ y: y1 }}
                 className="absolute bottom-[20%] left-[15%] w-80 h-80 bg-mutedBlue/3 rounded-full blur-[80px]"
@@ -109,16 +110,16 @@ export default function FloatingBackground() {
 
             {/* Technical Grid Overlay */}
             <div
-                className="absolute inset-0 opacity-[0.03]"
+                className="absolute inset-0 opacity-[0.02]"
                 style={{
                     backgroundImage: `linear-gradient(#3366cc 1px, transparent 1px), linear-gradient(90deg, #3366cc 1px, transparent 1px)`,
-                    backgroundSize: '100px 100px'
+                    backgroundSize: '40px 40px'
                 }}
             />
 
             {/* Ambient Data Streams */}
             <div className="absolute inset-0 overflow-hidden pointer-events-none opacity-[0.05]">
-                {[...Array(6)].map((_, i) => (
+                {[...Array(window.innerWidth < 768 ? 3 : 6)].map((_, i) => (
                     <motion.div
                         key={i}
                         initial={{ y: -1000 }}
@@ -129,8 +130,13 @@ export default function FloatingBackground() {
                             ease: "linear",
                             delay: i * 2
                         }}
-                        className="absolute text-[10px] font-mono text-mutedBlue whitespace-nowrap"
-                        style={{ left: `${15 + i * 15}%`, writingMode: 'vertical-rl' }}
+                        className="absolute text-[8px] md:text-[10px] font-mono text-mutedBlue whitespace-nowrap"
+                        style={{
+                            left: window.innerWidth < 768
+                                ? `${25 + i * 25}%`
+                                : `${15 + i * 15}%`,
+                            writingMode: 'vertical-rl'
+                        }}
                     >
                         {Array(20).fill('01011001-RX4-SYSTEM-ACTIVE-').join(' ')}
                     </motion.div>

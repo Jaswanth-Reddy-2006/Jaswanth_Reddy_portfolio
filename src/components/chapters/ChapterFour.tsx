@@ -1,28 +1,48 @@
 import { motion } from 'framer-motion';
-import { Award, ExternalLink } from 'lucide-react';
+import { Award, ExternalLink, Shield } from 'lucide-react';
 import type { Certification } from '../../data/portfolio';
 import { HighlightGroup, HighlightItem } from '../SmartHighlight';
+import { useSettings } from '../../context/SettingsContext';
+import { Canvas } from '@react-three/fiber';
+import ArchivePortal from '../salaar/ArchivePortal';
 
 interface ChapterFourProps {
     certifications: Certification[];
 }
 
 export default function ChapterFour({ certifications }: ChapterFourProps) {
+    const { isSalaarMode } = useSettings();
+
     return (
-        <section id="chapter-4" className="min-h-screen px-6 py-20 bg-gradient-to-b from-warmWhite to-softGray">
+        <section id="chapter-4" className={`min-h-screen px-6 py-20 transition-all duration-1000 relative overflow-hidden ${isSalaarMode
+            ? 'bg-[#0a0000]'
+            : 'bg-gradient-to-b from-warmWhite to-softGray'
+            }`}>
+            {isSalaarMode && (
+                <div className="absolute inset-0 z-0 pointer-events-none opacity-40">
+                    <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,_var(--tw-gradient-stops))] from-red-900/10 via-transparent to-transparent" />
+                    <Canvas dpr={[1, 2]}>
+                        <ArchivePortal />
+                    </Canvas>
+                </div>
+            )}
             <div className="max-w-6xl mx-auto">
                 <motion.div
                     initial={{ opacity: 0, y: 30 }}
                     whileInView={{ opacity: 1, y: 0 }}
                     viewport={{ once: true }}
                     transition={{ duration: 0.8 }}
-                    className="text-center mb-16"
+                    className="text-center mb-12 md:mb-16"
                 >
-                    <h2 className="text-4xl md:text-5xl font-bold text-darkText mb-4">
-                        Academic <span className="text-mutedBlue italic serif">Foundation</span>
+                    <h2 className={`text-2xl md:text-5xl font-bold mb-4 px-4 transition-colors duration-700 ${isSalaarMode ? 'text-white' : 'text-darkText'
+                        }`}>
+                        {isSalaarMode ? 'Khansaar' : 'Academic'} <span className={`${isSalaarMode ? 'text-red-700 font-mono uppercase tracking-widest' : 'text-mutedBlue italic serif'}`}>{isSalaarMode ? 'Intel' : 'Foundation'}</span>
                     </h2>
-                    <p className="text-lg text-lightText max-w-2xl mx-auto">
-                        A solid background in Computer Science, engineering systems, and mathematics.
+                    <p className={`text-base md:text-lg max-w-2xl mx-auto px-6 transition-colors duration-700 ${isSalaarMode ? 'text-white/40 font-mono text-sm' : 'text-lightText'
+                        }`}>
+                        {isSalaarMode
+                            ? '[DB_SYNC]: Synchronized tactical frameworks and warfare unit certifications.'
+                            : 'A solid background in Computer Science, engineering systems, and mathematics.'}
                     </p>
                 </motion.div>
 
@@ -37,19 +57,28 @@ export default function ChapterFour({ certifications }: ChapterFourProps) {
                         >
                             <HighlightItem
                                 id={cert.id}
-                                className="h-full bg-white rounded-2xl p-6 shadow-soft border border-softGray"
+                                className={`h-full p-6 transition-all duration-500 border ${isSalaarMode
+                                    ? 'bg-black/60 border-red-900/20 rounded-none hover:border-red-600 shadow-[0_0_20px_rgba(153,0,0,0.05)]'
+                                    : 'bg-white rounded-2xl shadow-soft border-softGray'
+                                    }`}
                             >
                                 <div className="flex items-start justify-between mb-4">
-                                    <div className="p-3 bg-gradient-to-br from-mutedBlue/10 to-deepEmerald/10 rounded-xl">
-                                        <Award className="text-mutedBlue" size={24} />
+                                    <div className={`p-3 transition-colors duration-700 ${isSalaarMode
+                                        ? 'bg-red-950/20 text-red-600'
+                                        : 'bg-gradient-to-br from-mutedBlue/10 to-deepEmerald/10 text-mutedBlue'
+                                        } ${isSalaarMode ? 'rounded-none' : 'rounded-xl'}`}>
+                                        {isSalaarMode ? <Shield size={24} /> : <Award size={24} />}
                                     </div>
-                                    <span className="text-sm font-semibold text-lightText">{cert.year}</span>
+                                    <span className={`text-sm font-semibold transition-colors duration-700 ${isSalaarMode ? 'text-red-600 font-mono' : 'text-lightText'
+                                        }`}>{isSalaarMode ? `v.${cert.year}` : cert.year}</span>
                                 </div>
 
-                                <h3 className="text-lg font-bold text-darkText mb-2">
-                                    {cert.title}
+                                <h3 className={`text-lg font-bold mb-2 transition-colors duration-700 ${isSalaarMode ? 'text-white' : 'text-darkText'
+                                    }`}>
+                                    {isSalaarMode ? cert.title.toUpperCase() : cert.title}
                                 </h3>
-                                <p className="text-sm text-lightText mb-6">
+                                <p className={`text-sm mb-6 transition-colors duration-700 ${isSalaarMode ? 'text-white/60 font-mono italic' : 'text-lightText'
+                                    }`}>
                                     {cert.organization}
                                 </p>
 
@@ -59,13 +88,13 @@ export default function ChapterFour({ certifications }: ChapterFourProps) {
                                             href={cert.credentialUrl}
                                             target="_blank"
                                             rel="noopener noreferrer"
-                                            className="inline-flex items-center gap-2 text-sm font-medium text-mutedBlue hover:text-deepEmerald transition-colors"
+                                            className={`inline-flex items-center gap-2 text-sm font-medium transition-colors ${isSalaarMode ? 'text-red-600 hover:text-white' : 'text-mutedBlue hover:text-deepEmerald'}`}
                                         >
-                                            View Credential
+                                            View Intel
                                             <ExternalLink size={14} />
                                         </a>
                                     ) : (
-                                        <div className="text-sm font-bold text-mutedBlue bg-mutedBlue/5 px-3 py-1 rounded-full w-fit">
+                                        <div className={`text-sm font-bold bg-opacity-10 px-3 py-1 rounded-none w-fit ${isSalaarMode ? 'text-red-600 bg-red-600' : 'text-mutedBlue bg-mutedBlue rounded-full'}`}>
                                             {cert.credentialUrl}
                                         </div>
                                     )

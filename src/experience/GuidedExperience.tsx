@@ -85,6 +85,13 @@ export default function GuidedExperience() {
             </AnimatePresence>
 
             <ProgressDots total={scenes.length} current={currentScene} />
+
+            <button
+                onClick={completeExperience}
+                className="fixed bottom-6 left-6 md:bottom-8 md:left-8 z-[60] px-5 py-2.5 md:px-6 md:py-3 bg-white/80 backdrop-blur-md border border-mutedBlue/20 rounded-full text-[10px] md:text-xs font-mono font-bold text-mutedBlue shadow-lg hover:bg-mutedBlue hover:text-white transition-all flex items-center gap-2 group"
+            >
+                <span className="opacity-60 group-hover:opacity-100 italic">Skip Interaction</span>
+            </button>
         </div>
     );
 }
