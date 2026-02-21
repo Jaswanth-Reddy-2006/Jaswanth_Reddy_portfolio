@@ -1,8 +1,9 @@
 import { motion } from 'framer-motion';
-import { Sparkles, Brain } from 'lucide-react';
 import { useSettings } from '../../context/SettingsContext';
 import { Canvas } from '@react-three/fiber';
 import NetworkGraph from '../salaar/NetworkGraph';
+import AudioIcon from '../AudioIcon';
+import ChapterBackground from '../ChapterBackground';
 
 interface ChapterFiveProps {
     vision: string;
@@ -14,6 +15,7 @@ export default function ChapterFive({ vision }: ChapterFiveProps) {
     return (
         <section id="chapter-5" className={`min-h-screen flex items-center justify-center px-6 py-20 transition-all duration-1000 relative overflow-hidden ${isSalaarMode ? 'bg-[#0a0000]' : 'bg-warmWhite'
             }`}>
+            <ChapterBackground chapter={5} />
             {isSalaarMode && (
                 <div className="absolute inset-0 z-0 pointer-events-none opacity-30">
                     <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,_var(--tw-gradient-stops))] from-red-900/10 via-transparent to-transparent" />
@@ -29,18 +31,12 @@ export default function ChapterFive({ vision }: ChapterFiveProps) {
                     viewport={{ once: true }}
                     transition={{ duration: 0.8 }}
                 >
-                    <motion.div
-                        initial={{ scale: 0 }}
-                        whileInView={{ scale: 1 }}
-                        viewport={{ once: true }}
-                        transition={{ delay: 0.2, type: 'spring', stiffness: 200 }}
-                        className={`inline-flex items-center justify-center w-16 h-16 transition-colors duration-700 ${isSalaarMode
-                            ? 'bg-red-900/20 text-red-600 rounded-none shadow-[0_0_20px_rgba(153,0,0,0.3)]'
-                            : 'bg-gradient-to-br from-mutedBlue/20 to-deepEmerald/20 rounded-full'
-                            } mb-8`}
-                    >
-                        {isSalaarMode ? <Brain size={32} /> : <Sparkles size={32} />}
-                    </motion.div>
+                    <div className="flex justify-center mb-8">
+                        <AudioIcon
+                            text="This is my vision for the future. What I am becoming as an engineer and architect."
+                            salaarText="Khansaar Evolution Protocol: Synchronizing future strategic objectives and planetary dominance frameworks."
+                        />
+                    </div>
 
                     <motion.h2
                         initial={{ opacity: 0, y: 20 }}

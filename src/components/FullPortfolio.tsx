@@ -4,7 +4,7 @@ import ChapterTwo from './chapters/ChapterTwo';
 import ChapterThree from './chapters/ChapterThree';
 import ChapterFour from './chapters/ChapterFour';
 import ChapterFive from './chapters/ChapterFive';
-import BuildLog from './BuildLog';
+import ChapterSix from './chapters/ChapterSix';
 import RealWorldExperience from './RealWorldExperience';
 import FloatingBackground from './FloatingBackground';
 import CustomCursor from './CustomCursor';
@@ -18,10 +18,12 @@ import SalaarActivation from './salaar/SalaarActivation';
 import { useSettings } from '../context/SettingsContext';
 import { AnimatePresence } from 'framer-motion';
 import { useState, useEffect } from 'react';
+import InterviewMode from './InterviewMode';
 
 export default function FullPortfolio() {
     const { isSalaarMode } = useSettings();
     const [isActivating, setIsActivating] = useState(false);
+    const [showSolarFlare, setShowSolarFlare] = useState(false);
     const { scrollYProgress } = useScroll();
 
     useEffect(() => {
@@ -30,6 +32,9 @@ export default function FullPortfolio() {
         } else {
             setIsActivating(false);
         }
+
+        // Always scroll to top on mode change
+        window.scrollTo({ top: 0, behavior: 'smooth' });
     }, [isSalaarMode]);
 
     const smoothProgress = useSpring(scrollYProgress, {
@@ -53,7 +58,24 @@ export default function FullPortfolio() {
         >
             <AnimatePresence>
                 {isActivating && (
-                    <SalaarActivation onComplete={() => setIsActivating(false)} />
+                    <SalaarActivation onComplete={() => {
+                        setIsActivating(false);
+                        setShowSolarFlare(true);
+                        setTimeout(() => setShowSolarFlare(false), 2000);
+                    }} />
+                )}
+            </AnimatePresence>
+
+            <AnimatePresence>
+                {showSolarFlare && (
+                    <motion.div
+                        initial={{ opacity: 0 }}
+                        animate={{ opacity: [0, 1, 0] }}
+                        exit={{ opacity: 0 }}
+                        transition={{ duration: 2, times: [0, 0.2, 1] }}
+                        className="fixed inset-0 z-[100] bg-white pointer-events-none"
+                        style={{ mixBlendMode: 'overlay' }}
+                    />
                 )}
             </AnimatePresence>
 
@@ -88,7 +110,26 @@ export default function FullPortfolio() {
             <PortfolioHUD />
             <SalaarHUD />
 
-            <main className="max-w-6xl mx-auto px-6 py-20 space-y-40">
+
+            {/* Background Atmosphere */}
+            <div className="fixed inset-0 z-[-1] pointer-events-none overflow-hidden">
+                {isSalaarMode ? (
+                    <>
+                        <div className="absolute inset-0 bg-black" />
+                        <div className="absolute inset-0 bg-[url('https://www.transparenttextures.com/patterns/carbon-fibre.png')] opacity-10" />
+                        <motion.div
+                            animate={{ y: ["-100%", "100%"] }}
+                            transition={{ duration: 12, repeat: Infinity, ease: "linear" }}
+                            className="absolute inset-x-0 h-[1px] bg-red-900/20"
+                        />
+                        <div className="absolute inset-0 bg-gradient-to-tr from-red-950/5 via-transparent to-red-950/5" />
+                    </>
+                ) : (
+                    <div className="absolute inset-0 bg-gradient-to-b from-warmWhite/50 to-transparent" />
+                )}
+            </div>
+
+            <main className="relative z-10 max-w-6xl mx-auto px-6 py-20 space-y-40">
                 {/* Chapter 1: Introduction */}
                 <motion.section
                     id="chapter-1"
@@ -140,7 +181,7 @@ export default function FullPortfolio() {
                     <ChapterThree skills={portfolioData.skills} />
                 </motion.section>
 
-                {/* Chapter 4: Certifications */}
+                {/* Chapter 4: Education */}
                 <motion.section
                     id="chapter-4"
                     initial={{ opacity: 0, y: 20 }}
@@ -148,7 +189,18 @@ export default function FullPortfolio() {
                     viewport={{ once: true, margin: "-100px" }}
                     transition={{ duration: 0.8 }}
                 >
-                    <ChapterFour certifications={portfolioData.certifications} />
+                    <ChapterFour education={portfolioData.education} />
+                </motion.section>
+
+                {/* Chapter 6: Certifications */}
+                <motion.section
+                    id="chapter-6"
+                    initial={{ opacity: 0, y: 20 }}
+                    whileInView={{ opacity: 1, y: 0 }}
+                    viewport={{ once: true, margin: "-100px" }}
+                    transition={{ duration: 0.8 }}
+                >
+                    <ChapterSix certifications={portfolioData.certifications} />
                 </motion.section>
 
                 {/* Social Profiles & External Uplink */}
@@ -165,14 +217,15 @@ export default function FullPortfolio() {
                     <ChapterFive vision={portfolioData.vision} />
                 </motion.section>
 
-                {/* Build Log */}
+
+                {/* AI Interview Mode */}
                 <motion.section
                     initial={{ opacity: 0, y: 20 }}
                     whileInView={{ opacity: 1, y: 0 }}
                     viewport={{ once: true, margin: "-100px" }}
                     transition={{ duration: 0.8 }}
                 >
-                    <BuildLog items={portfolioData.buildLog} />
+                    <InterviewMode />
                 </motion.section>
             </main>
 
@@ -206,7 +259,7 @@ export default function FullPortfolio() {
                                 </div>
                             </div>
                             <div className="text-sm font-bold text-mutedBlue uppercase tracking-widest bg-mutedBlue/5 px-4 py-2 rounded-full border border-mutedBlue/10">
-                                Available for Internship 2026
+                                Available for Internship
                             </div>
                             <div className="flex flex-col items-center gap-2 mt-8 opacity-40">
                                 <span className="text-[9px] font-mono uppercase tracking-[0.3em]">{isSalaarMode ? 'SALAAR SIGNAL MATRIX' : 'System Live Matrix'}</span>

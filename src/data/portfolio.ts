@@ -59,6 +59,7 @@ export interface PortfolioData {
     introduction: string;
     projects: Project[];
     skills: SkillCategory[];
+    education: Certification[];
     certifications: Certification[];
     experience: ExperienceItem[];
     vision: string;
@@ -98,8 +99,8 @@ export const portfolioData: PortfolioData = {
             techStack: ["React.js", "JavaScript", "Canvas API", "Vercel"],
             problem: "Students struggle to understand complex algorithms through static diagrams and manual traces. Traditional learning methods often lack the interactive feedback needed to grasp temporal changes in memory and data structures.",
             outcome: "Developed a high-performance visualization suite that maps auxiliary data structures in real-time. The platform provides a hands-on environment for mastering DSA concepts, leading to clearer mental models for complex graph and sorting logic.",
-            year: "2026",
-            impactBadge: "Engineering Excellence",
+            year: "",
+            impactBadge: "",
             decisions: {
                 why: "React.js was selected for its declarative UI state management, which is essential for reflecting algorithm steps. Canvas API was utilized for low-level rendering control, ensuring high frame rates during complex graph traversals where DOM-based rendering would lag.",
                 tradeoffs: [
@@ -138,7 +139,7 @@ export const portfolioData: PortfolioData = {
         }
     ],
 
-    certifications: [
+    education: [
         {
             id: "edu-1",
             title: "B.Tech in Computer Science & Engineering",
@@ -162,13 +163,44 @@ export const portfolioData: PortfolioData = {
         }
     ],
 
+    certifications: [
+        {
+            id: "cert-1",
+            title: "AWS Certified Solutions Architect",
+            organization: "Amazon Web Services",
+            year: "2025",
+            credentialUrl: "#"
+        },
+        {
+            id: "cert-2",
+            title: "Meta Front-End Developer Professional Certificate",
+            organization: "Meta",
+            year: "2025",
+            credentialUrl: "#"
+        },
+        {
+            id: "cert-3",
+            title: "Google Cloud Digital Leader",
+            organization: "Google Cloud",
+            year: "2025",
+            credentialUrl: "#"
+        },
+        {
+            id: "cert-4",
+            title: "Postman API Fundamentals Student Expert",
+            organization: "Postman",
+            year: "2025",
+            credentialUrl: "#"
+        }
+    ],
+
     experience: [
         {
             id: "exp-1",
             role: "Frontend Intern",
             roleTag: "Intern",
-            company: "InviGuide",
-            duration: "Jan 2026 – March 2026",
+            company: "ENVIGUID",
+            duration: "Jan – March",
             description: [
                 "Built responsive UI components using React and optimized for modern web standards.",
                 "Integrated REST APIs for dynamic data handling and real-time state synchronization.",

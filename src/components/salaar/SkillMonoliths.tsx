@@ -59,7 +59,7 @@ export default function SkillMonoliths() {
 
             {/* Central energy field */}
             <mesh rotation={[Math.PI / 2, 0, 0]} position={[0, -1.5, 0]}>
-                <ringGeometry args={[2, 4, 64]} />
+                <ringGeometry args={[2, 4, 32]} />
                 <meshStandardMaterial color="#4589ff" transparent opacity={0.1} side={THREE.DoubleSide} />
             </mesh>
 

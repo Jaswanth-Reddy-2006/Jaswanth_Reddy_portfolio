@@ -37,42 +37,6 @@ function Rocket({ delay = 0, xOffset = 0 }: { delay?: number, xOffset?: number }
     );
 }
 
-function AlienSpaceship({ delay = 0 }: { delay?: number }) {
-    const ref = useRef<THREE.Group>(null);
-    const speed = useMemo(() => Math.random() * 0.05 + 0.02, []);
-    const radius = useMemo(() => Math.random() * 10 + 5, []);
-
-    useFrame((state) => {
-        if (ref.current) {
-            const t = state.clock.elapsedTime + delay;
-            ref.current.position.x = Math.cos(t * speed * 10) * radius;
-            ref.current.position.y = Math.sin(t * speed * 5) * (radius / 2);
-            ref.current.position.z = Math.sin(t * speed * 10) * 5 - 10;
-            ref.current.rotation.y += 0.1;
-        }
-    });
-
-    return (
-        <group ref={ref}>
-            <Float speed={5} rotationIntensity={2} floatIntensity={2}>
-                <mesh>
-                    <cylinderGeometry args={[1, 1.2, 0.3, 16]} />
-                    <meshStandardMaterial color="#050505" metalness={1} roughness={0.2} />
-                </mesh>
-                <mesh position={[0, 0.2, 0]}>
-                    <sphereGeometry args={[0.5, 16, 16, 0, Math.PI * 2, 0, Math.PI / 2]} />
-                    <meshStandardMaterial color="#ff0000" transparent opacity={0.4} />
-                </mesh>
-                {[...Array(8)].map((_, i) => (
-                    <mesh key={i} position={[Math.cos(i * Math.PI / 4) * 0.9, -0.1, Math.sin(i * Math.PI / 4) * 0.9]}>
-                        <sphereGeometry args={[0.05, 8, 8]} />
-                        <meshStandardMaterial color="#ff0000" emissive="#ff0000" emissiveIntensity={6} />
-                    </mesh>
-                ))}
-            </Float>
-        </group>
-    );
-}
 
 function Planet({ position, size, color, speed = 0.1 }: { position: [number, number, number], size: number, color: string, speed?: number }) {
     const ref = useRef<THREE.Mesh>(null);
@@ -97,15 +61,28 @@ function Planet({ position, size, color, speed = 0.1 }: { position: [number, num
     );
 }
 
+function SolarFlare() {
+    return (
+        <Sparkles
+            count={100}
+            scale={[60, 40, 60]}
+            size={20}
+            speed={2}
+            color="#ff0000"
+            opacity={0.2}
+        />
+    );
+}
+
 function TwinklingStars() {
     return (
         <Sparkles
-            count={1200}
+            count={400}
             scale={[80, 80, 80]}
-            size={5}
-            speed={2}
+            size={4}
+            speed={1.5}
             color="#ff4444"
-            opacity={0.6}
+            opacity={0.4}
             noise={1}
         />
     );
@@ -115,18 +92,18 @@ function BloodNebula() {
     const meshRef = useRef<THREE.Mesh>(null);
     const uniforms = useMemo(() => ({
         uTime: { value: 0 },
-        uColor: { value: new THREE.Color("#1a0000") }
+        uColor: { value: new THREE.Color("#0c0000") } // Darker
     }), []);
 
     useFrame((state) => {
         if (meshRef.current) {
-            (meshRef.current.material as THREE.ShaderMaterial).uniforms.uTime.value = state.clock.elapsedTime * 0.05;
+            (meshRef.current.material as THREE.ShaderMaterial).uniforms.uTime.value = state.clock.elapsedTime * 0.03;
         }
     });
 
     return (
         <mesh ref={meshRef}>
-            <sphereGeometry args={[60, 64, 64]} />
+            <sphereGeometry args={[70, 16, 16]} />
             <shaderMaterial
                 uniforms={uniforms}
                 side={THREE.BackSide}
@@ -136,9 +113,8 @@ function BloodNebula() {
                     uniform float uTime;
                     uniform vec3 uColor;
                     void main() {
-                        vec2 uv = vUv;
-                        float noise = sin(uv.x * 8.0 + uTime) * cos(uv.y * 8.0 + uTime);
-                        gl_FragColor = vec4(uColor + (0.05 * noise), 0.2);
+                        float noise = sin(vUv.x * 2.0 + uTime) * sin(vUv.y * 2.0 + uTime);
+                        gl_FragColor = vec4(uColor + (0.01 * noise), 0.1);
                     }
                 `}
                 vertexShader={`
@@ -156,32 +132,40 @@ function BloodNebula() {
 export default function SalaarBackground() {
     return (
         <div className="fixed inset-0 z-[-1] bg-black">
-            <Canvas dpr={[1, 2]}>
+            <Canvas dpr={[1, 1.5]}> {/* Lower max DPR */}
                 <PerspectiveCamera makeDefault position={[0, 0, 30]} fov={50} />
                 <color attach="background" args={['#000']} />
 
                 <ambientLight intensity={0.1} />
-                <pointLight position={[20, 20, 20]} intensity={1.5} color="#ff0000" />
-                <pointLight position={[-20, -20, -20]} intensity={0.5} color="#220000" />
+                <pointLight position={[20, 20, 20]} intensity={0.5} color="#ff0000" />
 
-                <Stars radius={150} depth={100} count={8000} factor={4} saturation={0} fade speed={1.5} />
+                <Stars radius={100} depth={50} count={2000} factor={4} saturation={0} fade speed={0.5} />
                 <TwinklingStars />
+                <SolarFlare />
 
                 <BloodNebula />
 
-                <Planet position={[-15, 8, -25]} size={5} color="#2a0000" speed={0.04} />
-                <Planet position={[25, -15, -30]} size={8} color="#1a0000" speed={0.02} />
+                <Planet position={[-15, 8, -25]} size={4} color="#150000" speed={0.02} />
+                <Planet position={[25, -15, -30]} size={6} color="#080000" speed={0.01} />
 
                 <Rocket delay={0} xOffset={-18} />
-                <Rocket delay={7} xOffset={8} />
                 <Rocket delay={15} xOffset={25} />
 
-                <AlienSpaceship delay={0} />
-                <AlienSpaceship delay={150} />
 
-                <fog attach="fog" args={['#000', 25, 100]} />
+                <fog attach="fog" args={['#000', 40, 100]} />
             </Canvas>
-            <div className="absolute inset-0 bg-gradient-to-b from-black via-transparent to-red-950/20 opacity-50 pointer-events-none" />
+            <div className="absolute inset-0 bg-gradient-to-b from-black via-transparent to-red-950/10 opacity-40 pointer-events-none" />
+            <div className="absolute inset-0 bg-gradient-radial from-red-600/5 to-transparent pointer-events-none animate-pulse-slow" />
+            <style dangerouslySetInnerHTML={{
+                __html: `
+                @keyframes pulse-slow {
+                    0%, 100% { opacity: 0; }
+                    50% { opacity: 0.2; }
+                }
+                .animate-pulse-slow {
+                    animation: pulse-slow 4s ease-in-out infinite;
+                }
+            `}} />
         </div>
     );
 }

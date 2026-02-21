@@ -5,6 +5,9 @@ import { useState } from 'react';
 import { useSettings } from '../../context/SettingsContext';
 import { Canvas } from '@react-three/fiber';
 import SkillMonoliths from '../salaar/SkillMonoliths';
+import AudioIcon from '../AudioIcon';
+import BattleGrid from '../salaar/BattleGrid';
+import ChapterBackground from '../ChapterBackground';
 
 interface ChapterThreeProps {
     skills: SkillCategory[];
@@ -24,18 +27,14 @@ export default function ChapterThree({ skills }: ChapterThreeProps) {
     return (
         <section id="chapter-3" className={`min-h-screen px-4 md:px-6 py-16 md:py-24 transition-all duration-1000 relative overflow-hidden ${isSalaarMode ? 'bg-[#0a0000]' : 'bg-white'
             }`}>
+            <ChapterBackground chapter={3} />
+            {isSalaarMode && <BattleGrid opacity={0.5} />}
             {/* Ambient Background Elements */}
-            {!isSalaarMode && (
-                <>
-                    <div className="absolute top-0 right-0 w-96 h-96 bg-mutedBlue/5 rounded-full blur-3xl -translate-y-1/2 translate-x-1/2" />
-                    <div className="absolute bottom-0 left-0 w-96 h-96 bg-deepEmerald/5 rounded-full blur-3xl translate-y-1/2 -translate-x-1/2" />
-                </>
-            )}
             {isSalaarMode && (
                 <div className="absolute inset-0 z-0 pointer-events-none">
-                    <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,_var(--tw-gradient-stops))] from-red-900/10 via-transparent to-transparent" />
-                    <div className="absolute inset-0 opacity-40">
-                        <Canvas dpr={[1, 2]}>
+                    <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,_var(--tw-gradient-stops))] from-red-900/10 via-transparent to-transparent opacity-60" />
+                    <div className="absolute inset-0 opacity-20">
+                        <Canvas dpr={[1, 1.5]}>
                             <SkillMonoliths />
                         </Canvas>
                     </div>
@@ -50,26 +49,32 @@ export default function ChapterThree({ skills }: ChapterThreeProps) {
                     transition={{ duration: 0.8 }}
                     className="text-center mb-12 md:mb-20"
                 >
-                    <h2 className={`text-3xl sm:text-4xl md:text-6xl font-bold mb-6 tracking-tight flex flex-col md:flex-row items-center justify-center gap-4 transition-colors duration-700 ${isSalaarMode ? 'text-white' : 'text-darkText'
+                    <div className="flex justify-center mb-6">
+                        <AudioIcon
+                            text="Welcome to my Technical Arsenal. This section showcases the core technologies and engineering tools I use to build robust software."
+                            salaarText="TACTICAL_ARMOURY: Synchronizing high-performance warfare modules and engineering tools."
+                        />
+                    </div>
+                    <h2 className={`text-3xl sm:text-4xl md:text-6xl font-bold mb-6 tracking-tight flex flex-col md:flex-row items-center justify-center gap-4 transition-colors duration-700 ${isSalaarMode ? 'text-white font-mono uppercase tracking-widest' : 'text-darkText'
                         }`}>
-                        <div className="relative w-12 h-12 md:w-20 md:h-20">
-                            <motion.div
-                                animate={{ rotate: 360 }}
-                                transition={{ duration: 10, repeat: Infinity, ease: "linear" }}
-                                className={`absolute inset-0 border-2 border-dashed rounded-full transition-colors duration-700 ${isSalaarMode ? 'border-red-900/40' : 'border-mutedBlue/20'
-                                    }`}
-                            />
-                            <div className="absolute inset-0 flex items-center justify-center">
-                                <div className={`w-1.5 h-1.5 md:w-2 md:h-2 rounded-full transition-all duration-700 ${isSalaarMode ? 'bg-red-600 shadow-[0_0_15px_#990000]' : 'bg-mutedBlue shadow-[0_0_10px_#3366CC]'
-                                    }`} />
+                        {isSalaarMode && (
+                            <div className="relative w-12 h-12 md:w-20 md:h-20">
+                                <motion.div
+                                    animate={{ rotate: 360 }}
+                                    transition={{ duration: 10, repeat: Infinity, ease: "linear" }}
+                                    className={`absolute inset-0 border-2 border-dashed rounded-full border-red-900/40`}
+                                />
+                                <div className="absolute inset-0 flex items-center justify-center">
+                                    <div className={`w-1.5 h-1.5 md:w-2 md:h-2 rounded-full bg-red-600 shadow-[0_0_15px_#990000]`} />
+                                </div>
                             </div>
-                        </div>
-                        {isSalaarMode ? 'Tactical' : 'Technical'} <span className={`${isSalaarMode ? 'text-red-700' : 'text-mutedBlue italic serif'}`}>{isSalaarMode ? 'Armoury' : 'Arsenal'}</span>
+                        )}
+                        {isSalaarMode ? 'TACTICAL' : 'Technical'} <span className={`${isSalaarMode ? 'text-red-700' : 'text-mutedBlue italic serif'}`}>{isSalaarMode ? 'ARMOURY' : 'Arsenal'}</span>
                     </h2>
                     <p className={`text-lg md:text-xl max-w-2xl mx-auto font-light leading-relaxed px-4 transition-colors duration-700 ${isSalaarMode ? 'text-white/40 font-mono' : 'text-lightText'
                         }`}>
                         {isSalaarMode
-                            ? 'High-performance modules optimized for tactical dominance.'
+                            ? '[ARMOURY_SYSTEMS]: LOCK_LOADED. All technical units optimized for high-intensity deployment.'
                             : 'A curated collection of technologies used to architect scalable, high-impact systems.'}
                     </p>
                 </motion.div>
@@ -162,14 +167,21 @@ export default function ChapterThree({ skills }: ChapterThreeProps) {
                                     : 'bg-gradient-to-br from-white to-warmWhite border-softGray shadow-inner'
                                     }`}
                             >
+                                {isSalaarMode && <BattleGrid isCard opacity={0.6} />}
                                 {isSalaarMode && (
-                                    <div className="absolute top-0 left-0 w-full h-[1px] bg-gradient-to-r from-transparent via-red-700 to-transparent opacity-50" />
+                                    <div className="absolute top-0 left-0 w-full h-[1px] bg-gradient-to-r from-transparent via-red-700 to-transparent opacity-50 z-10" />
                                 )}
-                                <div className="space-y-6 md:space-y-8">
-                                    <h4 className={`text-xs font-bold uppercase tracking-widest mb-2 transition-colors duration-700 ${isSalaarMode ? 'text-red-600' : 'text-mutedBlue lg:hidden'
-                                        }`}>
-                                        {isSalaarMode ? `ACTIVE_CORE: ${expandedSkill}` : `Active Core Module: ${expandedSkill}`}
-                                    </h4>
+                                <div className="space-y-6 md:space-y-8 relative z-10">
+                                    <div className="flex items-center justify-between mb-2">
+                                        <h4 className={`text-xs font-bold uppercase tracking-widest transition-colors duration-700 ${isSalaarMode ? 'text-red-600' : 'text-mutedBlue lg:hidden'
+                                            }`}>
+                                            {isSalaarMode ? `ACTIVE_CORE: ${expandedSkill}` : `Active Core Module: ${expandedSkill}`}
+                                        </h4>
+                                        <AudioIcon
+                                            text={`Overview of ${expandedSkill}: ${skills.find(s => s.category === expandedSkill)?.skills.join(', ')}.`}
+                                            salaarText={`UNIT_SYNC: Integrated ${expandedSkill} modules into tactical framework.`}
+                                        />
+                                    </div>
                                     <div className="flex flex-wrap gap-2 md:gap-4">
                                         {skills.find(s => s.category === expandedSkill)?.skills.map((skill, i) => (
                                             <motion.div
@@ -187,19 +199,19 @@ export default function ChapterThree({ skills }: ChapterThreeProps) {
                                             </motion.div>
                                         ))}
                                     </div>
-
-                                    <div className={`pt-6 md:pt-8 border-t mt-auto transition-colors duration-700 ${isSalaarMode ? 'border-red-900/10' : 'border-softGray/50'
-                                        }`}>
-                                        <div className="flex items-center gap-3 italic">
-                                            <div className={`w-8 md:w-12 h-[1px] ${isSalaarMode ? 'bg-red-600/30' : 'bg-mutedBlue/30'}`} />
-                                            <p className={`text-[10px] md:text-sm transition-colors duration-700 ${isSalaarMode ? 'text-white/40 font-mono' : 'text-lightText'}`}>
-                                                {isSalaarMode ? 'All systems operational. Redlining performance parameters.' : 'Mastery through implementation and benchmarking.'}
-                                            </p>
-                                        </div>
-                                    </div>
                                 </div>
                             </motion.div>
                         </AnimatePresence>
+                    </div>
+                </div>
+
+                <div className={`pt-6 md:pt-8 border-t mt-12 transition-colors duration-700 ${isSalaarMode ? 'border-red-900/10' : 'border-softGray/50'
+                    }`}>
+                    <div className="flex items-center gap-3 italic">
+                        <div className={`w-8 md:w-12 h-[1px] ${isSalaarMode ? 'bg-red-600/30' : 'bg-mutedBlue/30'}`} />
+                        <p className={`text-[10px] md:text-sm transition-colors duration-700 ${isSalaarMode ? 'text-white/40 font-mono' : 'text-lightText'}`}>
+                            {isSalaarMode ? 'All systems operational. Redlining performance parameters.' : 'Mastery through implementation and benchmarking.'}
+                        </p>
                     </div>
                 </div>
             </div>

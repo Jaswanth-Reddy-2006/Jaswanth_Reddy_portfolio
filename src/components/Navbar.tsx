@@ -2,12 +2,14 @@ import { motion, useScroll, useSpring, AnimatePresence } from 'framer-motion';
 import { Sun, Crosshair, Menu, X } from 'lucide-react';
 import { useState } from 'react';
 import { useSettings } from '../context/SettingsContext';
+import SolarLogo from './salaar/SolarLogo';
 
 const navLinks = [
-    { id: 'chapter-1', label: 'Intro' },
+    { id: 'chapter-1', label: 'Start' },
     { id: 'chapter-2', label: 'Work' },
     { id: 'chapter-3', label: 'Skills' },
-    { id: 'chapter-4', label: 'Certs' },
+    { id: 'chapter-4', label: 'Education' },
+    { id: 'chapter-6', label: 'Certs' },
     { id: 'chapter-5', label: 'Vision' },
 ];
 
@@ -45,10 +47,17 @@ export default function Navbar() {
             />
             <div className="max-w-7xl mx-auto px-6 py-4">
                 <div className="flex items-center justify-between">
-                    <div className="flex items-center gap-2 group cursor-pointer" onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}>
-                        <span className={`hidden sm:inline-block text-sm md:text-lg font-bold tracking-tight transition-colors duration-700 ${isSalaarMode ? 'text-white' : 'text-darkText'}`}>
-                            The Making of an Engineer
-                        </span>
+                    <div className="flex items-center gap-4 group cursor-pointer" onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}>
+                        {isSalaarMode ? (
+                            <SolarLogo size={32} />
+                        ) : (
+                            <div className="w-8 h-8 bg-mutedBlue rounded-lg flex items-center justify-center text-white font-bold">J</div>
+                        )}
+                        <div className="flex flex-col">
+                            <span className={`text-sm md:text-lg font-bold tracking-tight transition-colors duration-700 ${isSalaarMode ? 'text-white font-mono uppercase tracking-[0.2em]' : 'text-darkText'}`}>
+                                {isSalaarMode ? 'KHANSAR KA SALAAR' : 'The Making of an Engineer'}
+                            </span>
+                        </div>
                     </div>
 
                     {/* Theme Toggle Button (Centered) */}

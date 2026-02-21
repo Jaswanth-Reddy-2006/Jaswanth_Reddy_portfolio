@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react';
 import { motion, useSpring, useMotionValue } from 'framer-motion';
+import { useSettings } from '../context/SettingsContext';
 
 export default function CustomCursor() {
     const [isPointer, setIsPointer] = useState(false);
@@ -39,9 +40,11 @@ export default function CustomCursor() {
         };
     }, [cursorX, cursorY]);
 
+    const { isSalaarMode } = useSettings();
+
     return (
         <motion.div
-            className="fixed top-0 left-0 w-6 h-6 border-2 border-mutedBlue rounded-full pointer-events-none z-[9999] hidden md:block"
+            className={`fixed top-0 left-0 pointer-events-none z-[9999] hidden md:block ${isSalaarMode ? '' : 'w-6 h-6 border-2 border-mutedBlue rounded-full'}`}
             style={{
                 x: springX,
                 y: springY,
@@ -50,16 +53,23 @@ export default function CustomCursor() {
             }}
             animate={{
                 scale: isClicking ? 0.8 : (isPointer ? 1.5 : 1),
-                backgroundColor: isPointer ? 'rgba(51, 102, 204, 0.1)' : 'transparent',
-                borderColor: isPointer ? 'rgba(51, 102, 204, 0.8)' : 'rgba(51, 102, 204, 0.4)',
+                backgroundColor: isSalaarMode ? 'transparent' : (isPointer ? 'rgba(51, 102, 204, 0.1)' : 'transparent'),
+                borderColor: isSalaarMode ? 'transparent' : (isPointer ? 'rgba(51, 102, 204, 0.8)' : 'rgba(51, 102, 204, 0.4)'),
             }}
         >
-            <motion.div
-                className="absolute inset-0 m-auto w-1 h-1 bg-mutedBlue rounded-full"
-                animate={{
-                    scale: isPointer ? 0 : 1,
-                }}
-            />
+            {isSalaarMode ? (
+                <div className="relative w-8 h-8 flex items-center justify-center">
+                    <div className="absolute inset-0 border-2 border-red-600 rounded-full shadow-[0_0_10px_rgba(255,0,0,0.4)]" />
+                    <div className="w-1.5 h-1.5 bg-red-600 rounded-full shadow-[0_0_8px_rgba(255,0,0,0.8)]" />
+                </div>
+            ) : (
+                <motion.div
+                    className="absolute inset-0 m-auto w-1 h-1 bg-mutedBlue rounded-full"
+                    animate={{
+                        scale: isPointer ? 0 : 1,
+                    }}
+                />
+            )}
         </motion.div>
     );
 }

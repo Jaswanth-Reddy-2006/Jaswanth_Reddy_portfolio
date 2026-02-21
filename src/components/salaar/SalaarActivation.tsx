@@ -1,7 +1,5 @@
 import { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Canvas } from '@react-three/fiber';
-import { Sparkles, PerspectiveCamera } from '@react-three/drei';
 
 interface SalaarActivationProps {
     onComplete: () => void;
@@ -38,67 +36,40 @@ function Typewriter({ text, speed = 100, onComplete }: { text: string, speed?: n
     );
 }
 
-function BloodSplatter() {
+function PrabhasBlink() {
     return (
-        <div className="absolute inset-0 pointer-events-none z-[110]">
-            {[...Array(15)].map((_, i) => (
-                <motion.div
-                    key={i}
-                    initial={{ opacity: 0, scale: 0, y: -20 }}
-                    animate={{
-                        opacity: [0, 0.8, 0.4],
-                        scale: [0, 1.5, 1.2],
-                        y: [0, 100 + Math.random() * 200]
-                    }}
-                    transition={{
-                        duration: 1.5 + Math.random(),
-                        delay: 0.2 + (i * 0.1),
-                        ease: "easeOut"
-                    }}
-                    className="absolute rounded-full bg-red-900 shadow-[0_0_15px_rgba(153,0,0,0.5)]"
-                    style={{
-                        left: `${Math.random() * 100}%`,
-                        top: `${Math.random() * 80}%`,
-                        width: `${Math.random() * 30 + 10}px`,
-                        height: `${Math.random() * 60 + 20}px`,
-                        filter: 'blur(2px)'
-                    }}
+        <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: [0, 1, 0, 1, 0] }}
+            transition={{ duration: 1.5, times: [0, 0.2, 0.4, 0.8, 1] }}
+            className="absolute inset-0 flex items-center justify-center z-[150] bg-black"
+        >
+            <div className="absolute inset-0 w-full h-full">
+                <img
+                    src="/assets/salaar/prabhas.jpg"
+                    alt="REBEL STAR SALAAR"
+                    className="w-full h-full object-cover brightness-[0.5] contrast-[1.3]"
                 />
-            ))}
-        </div>
-    );
-}
-
-function BloodBlast() {
-    return (
-        <Sparkles
-            count={3000}
-            scale={[2, 2, 2]}
-            size={8}
-            speed={20}
-            opacity={1}
-            color="#d00000"
-        />
+                <motion.div
+                    animate={{ opacity: [0, 0.4, 0] }}
+                    transition={{ duration: 0.1, repeat: Infinity, repeatDelay: 0.4 }}
+                    className="absolute inset-0 bg-red-600/10 mix-blend-color-dodge"
+                />
+            </div>
+        </motion.div>
     );
 }
 
 export default function SalaarActivation({ onComplete }: SalaarActivationProps) {
-    const [phase, setPhase] = useState<'text' | 'blast' | 'splatter' | 'name' | 'complete'>('text');
+    const [phase, setPhase] = useState<'text' | 'pic_blink' | 'blast' | 'splatter' | 'name' | 'complete'>('text');
 
     useEffect(() => {
-        if (phase === 'blast') {
-            const timer = setTimeout(() => setPhase('splatter'), 1500);
+        if (phase === 'pic_blink') {
+            const timer = setTimeout(() => setPhase('complete'), 1200);
             return () => clearTimeout(timer);
         }
-        if (phase === 'splatter') {
-            const timer = setTimeout(() => setPhase('name'), 2500);
-            return () => clearTimeout(timer);
-        }
-        if (phase === 'name') {
-            const timer = setTimeout(() => {
-                setPhase('complete');
-                setTimeout(onComplete, 1000);
-            }, 3000);
+        if (phase === 'complete') {
+            const timer = setTimeout(onComplete, 500);
             return () => clearTimeout(timer);
         }
     }, [phase, onComplete]);
@@ -117,57 +88,12 @@ export default function SalaarActivation({ onComplete }: SalaarActivationProps) 
                         <Typewriter
                             text="THE CEASEFIRE IS OVER... SALAAR MODE ACTIVATING"
                             speed={60}
-                            onComplete={() => setPhase('blast')}
+                            onComplete={() => setPhase('pic_blink')}
                         />
                     </motion.div>
                 )}
 
-                {(phase === 'blast' || phase === 'splatter' || phase === 'name') && (
-                    <motion.div
-                        key="visual-fx"
-                        initial={{ opacity: 0 }}
-                        animate={{ opacity: 1 }}
-                        exit={{ opacity: 0 }}
-                        className="absolute inset-0 flex items-center justify-center"
-                    >
-                        {phase === 'blast' && (
-                            <div className="absolute inset-0">
-                                <Canvas>
-                                    <PerspectiveCamera makeDefault position={[0, 0, 5]} />
-                                    <BloodBlast />
-                                    <pointLight position={[0, 0, 0]} intensity={20} color="#ff0000" />
-                                </Canvas>
-                                <motion.div
-                                    initial={{ opacity: 0 }}
-                                    animate={{ opacity: [0, 0.4, 0] }}
-                                    transition={{ duration: 1 }}
-                                    className="absolute inset-0 bg-red-600/30"
-                                />
-                            </div>
-                        )}
-
-                        {phase === 'splatter' && <BloodSplatter />}
-
-                        {phase === 'name' && (
-                            <motion.div
-                                initial={{ opacity: 0, scale: 0.5, letterSpacing: "2em", filter: "blur(20px)" }}
-                                animate={{ opacity: 1, scale: 1, letterSpacing: "0.2em", filter: "blur(0px)" }}
-                                exit={{ opacity: 0, y: -50 }}
-                                transition={{ duration: 1.5, ease: "easeOut" }}
-                                className="text-red-600 text-5xl md:text-8xl font-black uppercase tracking-widest relative"
-                            >
-                                <span className="relative z-10">Jaswanth Reddy</span>
-                                <motion.div
-                                    animate={{ opacity: [0, 0.2, 0] }}
-                                    transition={{ duration: 0.1, repeat: Infinity, repeatDelay: Math.random() }}
-                                    className="absolute inset-0 text-white blur-sm"
-                                >
-                                    Jaswanth Reddy
-                                </motion.div>
-                            </motion.div>
-                        )}
-                    </motion.div>
-                )}
+                {phase === 'pic_blink' && <PrabhasBlink />}
             </AnimatePresence>
 
             {/* Ambient Grime */}

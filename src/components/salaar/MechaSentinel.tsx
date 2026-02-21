@@ -3,6 +3,7 @@ import { Canvas, useFrame } from '@react-three/fiber';
 import { Float, PerspectiveCamera, Torus, Box, Sphere } from '@react-three/drei';
 import * as THREE from 'three';
 import { motion, AnimatePresence } from 'framer-motion';
+import AudioIcon from '../AudioIcon';
 
 interface ArmProps {
     position: [number, number, number];
@@ -140,8 +141,17 @@ function HUDOverlay({ state }: { state: string }) {
                 animate={{ opacity: 1, x: 0 }}
                 className="absolute bottom-48 right-12 text-right pointer-events-none"
             >
-                <div className="text-red-600 font-mono text-[10px] uppercase tracking-widest bg-black/40 px-3 py-1 border-r-2 border-red-600 mb-2">
-                    Khansaar Unit: {state}
+                <div className="flex items-center gap-3 mb-2 bg-black/40 px-3 py-1 border-r-2 border-red-600">
+                    <div className="flex flex-col text-right">
+                        <span className="text-red-500 font-mono text-[8px] uppercase opacity-60">Status: {state}</span>
+                        <span className="text-red-600 font-mono text-[10px] font-bold uppercase tracking-widest leading-tight">Khansaar_Sentinel_Unit</span>
+                    </div>
+                    <div className="pointer-events-auto">
+                        <AudioIcon
+                            text=""
+                            salaarText="Tactical Status Report: Systems fully operational. Khansaar strength levels redlining. Perimeter secure. Commander's directives being executed. Direct Kanchar protocol is active."
+                        />
+                    </div>
                 </div>
                 <div className="flex justify-end gap-1">
                     {[...Array(5)].map((_, i) => (

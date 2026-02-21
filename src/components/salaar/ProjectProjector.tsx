@@ -66,7 +66,7 @@ export default function ProjectProjector() {
 
             {/* Holographic Projection Beam */}
             <mesh ref={beamRef} position={[0, 2.5, 0]}>
-                <coneGeometry args={[3, 5, 32, 1, true]} />
+                <coneGeometry args={[3, 5, 24, 1, true]} />
                 <meshStandardMaterial
                     color="#4589ff"
                     transparent

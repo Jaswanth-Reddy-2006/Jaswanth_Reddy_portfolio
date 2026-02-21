@@ -1,5 +1,7 @@
 import { motion } from 'framer-motion';
 import { useSettings } from '../../context/SettingsContext';
+import AudioIcon from '../AudioIcon';
+import ChapterBackground from '../ChapterBackground';
 
 interface ChapterOneProps {
     name: string;
@@ -12,10 +14,36 @@ export default function ChapterOne({ name, tagline, introduction }: ChapterOnePr
 
     return (
         <section id="chapter-1" className="min-h-screen flex items-center justify-center px-6 py-20 relative overflow-hidden">
+            <ChapterBackground chapter={1} />
             {isSalaarMode && (
-                <div className="absolute inset-0 z-0 pointer-events-none">
-                    <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,_var(--tw-gradient-stops))] from-red-900/10 via-transparent to-transparent" />
-                </div>
+                <>
+                    <motion.div
+                        initial={{ opacity: 0, scale: 0.8 }}
+                        animate={{ opacity: 0.6, scale: 1 }}
+                        transition={{ duration: 2, delay: 0.5 }}
+                        className="absolute inset-0 z-0 pointer-events-none flex items-center justify-center"
+                    >
+                        <img
+                            src="/assets/salaar/logo.png"
+                            alt="Salaar Tribal Logo"
+                            className="w-[100%] max-w-[1200px] object-contain brightness-0 invert opacity-40 filter invert-[0.4] sepia-[1] saturate-[1200%] hue-rotate-[0deg] contrast-[1.8]"
+                            style={{ filter: "drop-shadow(0 0 50px rgba(255, 0, 0, 0.8))" }}
+                        />
+                    </motion.div>
+                    {/* Background Visual Enhancements */}
+                    <div className="absolute inset-0 z-[-1] pointer-events-none">
+                        <motion.div
+                            animate={{ opacity: [0.1, 0.3, 0.1], x: ["-100%", "100%"] }}
+                            transition={{ duration: 8, repeat: Infinity, ease: "linear" }}
+                            className="absolute top-1/2 left-0 w-full h-[2px] bg-gradient-to-r from-transparent via-red-600 to-transparent blur-sm"
+                        />
+                        <motion.div
+                            animate={{ opacity: [0.1, 0.3, 0.1], x: ["100%", "-100%"] }}
+                            transition={{ duration: 10, repeat: Infinity, ease: "linear" }}
+                            className="absolute bottom-1/4 left-0 w-full h-[1px] bg-gradient-to-r from-transparent via-red-800 to-transparent blur-sm"
+                        />
+                    </div>
+                </>
             )}
             <motion.div
                 initial={{ opacity: 0, y: 30 }}
@@ -25,6 +53,7 @@ export default function ChapterOne({ name, tagline, introduction }: ChapterOnePr
                 className="max-w-4xl mx-auto"
             >
                 <div className="text-center z-10 space-y-6 md:space-y-16">
+
                     {/* Main Headline */}
                     <div className="space-y-4 md:space-y-6">
                         <motion.h1
@@ -36,44 +65,47 @@ export default function ChapterOne({ name, tagline, introduction }: ChapterOnePr
                                 }`}
                         >
                             {isSalaarMode ? (
-                                <>
-                                    <span className="font-black relative">
-                                        KHANSAAR
-                                        <motion.span
-                                            animate={{
-                                                opacity: [0, 1, 0, 1, 0],
-                                                x: [-2, 2, -2, 4, -4],
-                                                filter: ["blur(0px)", "blur(2px)", "blur(0px)", "blur(4px)", "blur(0px)"]
-                                            }}
-                                            transition={{ duration: 0.2, repeat: Infinity, repeatDelay: 2 }}
-                                            className="absolute inset-0 text-red-700 opacity-50"
-                                        >
-                                            KHANSAAR
-                                        </motion.span>
+                                <div className="flex flex-col items-center">
+                                    <span className="text-5xl sm:text-7xl md:text-[9rem] font-black relative tracking-tight text-red-600 italic">
+                                        KHANSAR KA SALAAR
                                     </span>
-                                    <span className="italic text-red-600 font-light -mt-2 md:-mt-4 uppercase tracking-[0.2em] text-4xl md:text-6xl">STRENGTH INITIALIZED</span>
-                                </>
+                                </div>
                             ) : (
-                                <>
-                                    <span className="font-extrabold text-balance">The Curious</span>
-                                    <span className="italic text-mutedBlue font-light -mt-2 md:-mt-4">Beginning</span>
-                                </>
+                                <div className="flex flex-col items-center">
+                                    <span className="text-5xl sm:text-7xl md:text-[9rem] font-extrabold text-balance">The Curious</span>
+                                    <span className="italic text-mutedBlue font-light -mt-2 md:-mt-4 text-4xl md:text-6xl">Beginning</span>
+                                </div>
                             )}
                         </motion.h1>
+
+                        <div className="flex justify-center mt-4 gap-4">
+                            {!isSalaarMode && (
+                                <>
+                                    <AudioIcon
+                                        text="I design, I build a scalable website."
+                                        salaarText="I ARCHITECT, I DOMINATE SCALABLE SYSTEMS."
+                                    />
+                                    <AudioIcon
+                                        text="The beginning of a journey in engineering."
+                                        salaarText="Khansaar strength initialized. The ceasefire is over."
+                                    />
+                                </>
+                            )}
+                        </div>
 
                         <motion.h2
                             initial={{ opacity: 0, y: 20 }}
                             whileInView={{ opacity: 1, y: 0 }}
                             viewport={{ once: true }}
                             transition={{ duration: 0.8, delay: 0.4 }}
-                            className={`text-xl sm:text-2xl md:text-5xl font-bold tracking-tight cursor-default relative inline-block mx-auto transition-colors duration-700 ${isSalaarMode ? 'text-red-600' : 'text-darkText'
+                            className={`text-xl sm:text-2xl md:text-6xl font-black tracking-tighter cursor-default relative inline-block mx-auto transition-colors duration-700 ${isSalaarMode ? 'text-white italic uppercase' : 'text-darkText'
                                 }`}
                         >
-                            <span className={`relative z-10 ${isSalaarMode ? 'font-mono uppercase tracking-widest' : ''}`}>
-                                {isSalaarMode ? `SALAAR: ${name.split(' ').join('_').toUpperCase()}` : name}
+                            <span className={`relative z-10 ${isSalaarMode ? 'font-mono' : ''}`}>
+                                {isSalaarMode ? name.toUpperCase() : name}
                             </span>
                             <motion.div
-                                className={`absolute -inset-x-8 sm:-inset-x-12 -inset-y-4 sm:-inset-y-6 blur-2xl sm:blur-3xl rounded-full -z-0 pointer-events-none transition-colors duration-700 ${isSalaarMode ? 'bg-red-900/20' : 'bg-mutedBlue/5'
+                                className={`absolute -inset-x-8 sm:-inset-x-12 -inset-y-4 sm:-inset-y-6 blur-2xl sm:blur-3xl rounded-full -z-0 pointer-events-none transition-colors duration-700 ${isSalaarMode ? 'bg-red-900/40' : 'bg-mutedBlue/5'
                                     }`}
                                 animate={{ opacity: [0.3, 0.6, 0.3] }}
                                 transition={{ duration: 5, repeat: Infinity, ease: "easeInOut" }}
@@ -147,6 +179,6 @@ export default function ChapterOne({ name, tagline, introduction }: ChapterOnePr
                     </motion.p>
                 </div>
             </motion.div>
-        </section >
+        </section>
     );
 }

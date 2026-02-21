@@ -1,4 +1,3 @@
-import { motion } from 'framer-motion';
 import { ExternalLink, Github, Code2, Linkedin, Trophy } from 'lucide-react';
 import type { SocialProfile } from '../data/portfolio';
 import { useSettings } from '../context/SettingsContext';
@@ -27,11 +26,8 @@ export default function ProfilePreviewCard({ profile }: ProfilePreviewCardProps)
     const color = platformColors[profile.platform];
 
     return (
-        <motion.div
-            initial={{ opacity: 0, scale: 0.95, y: 10 }}
-            animate={{ opacity: 1, scale: 1, y: 0 }}
-            exit={{ opacity: 0, scale: 0.95, y: 10 }}
-            className={`w-[280px] sm:w-[320px] overflow-hidden shadow-2xl border pointer-events-auto transition-all duration-700 ${isSalaarMode
+        <div
+            className={`w-[320px] flex-shrink-0 overflow-hidden shadow-2xl border pointer-events-auto transition-all duration-700 ${isSalaarMode
                 ? 'bg-black border-red-900/50 rounded-none'
                 : 'bg-white border-softGray rounded-3xl'
                 }`}
@@ -59,14 +55,14 @@ export default function ProfilePreviewCard({ profile }: ProfilePreviewCardProps)
             </div>
 
             {/* Metrics Grid */}
-            <div className={`p-6 transition-all duration-700 ${isSalaarMode ? 'bg-black' : 'bg-gradient-to-b from-white to-warmWhite'}`}>
-                <div className="grid grid-cols-2 gap-4">
+            <div className={`p-6 min-h-[160px] flex flex-col transition-all duration-700 ${isSalaarMode ? 'bg-black' : 'bg-gradient-to-b from-white to-warmWhite'}`}>
+                <div className="grid grid-cols-2 gap-3 flex-1">
                     {Object.entries(profile.metrics).map(([key, value]) => (
                         <div key={key} className={`p-3 border transition-all duration-700 ${isSalaarMode
                             ? 'bg-red-900/5 border-red-900/20 rounded-none'
                             : 'bg-softGray/20 border-softGray/40 rounded-2xl'
                             }`}>
-                            <span className={`block text-[9px] uppercase font-bold tracking-tighter mb-1 ${isSalaarMode ? 'text-red-500/60' : 'text-lightText/60'}`}>
+                            <span className={`block text-[9px] uppercase font-bold tracking-tighter mb-1 transition-colors duration-700 ${isSalaarMode ? 'text-red-500/60' : 'text-lightText/60'}`}>
                                 {key.replace(/([A-Z])/g, ' $1').trim()}
                             </span>
                             <span className={`block text-sm font-bold font-mono ${isSalaarMode ? 'text-red-400' : 'text-darkText'}`}>
@@ -77,12 +73,6 @@ export default function ProfilePreviewCard({ profile }: ProfilePreviewCardProps)
                 </div>
 
                 <div className={`mt-6 pt-6 border-t flex flex-col gap-2 ${isSalaarMode ? 'border-red-900/30' : 'border-softGray/50'}`}>
-                    <div className="flex items-center justify-between text-[10px] font-mono">
-                        <span className={isSalaarMode ? 'text-red-500/40' : 'text-lightText/60'}>CONNECTION STATUS</span>
-                        <span className={`${isSalaarMode ? 'text-red-600' : 'text-deepEmerald'} animate-pulse`}>
-                            ● {isSalaarMode ? 'BATTLE READY' : 'ENCRYPTED'}
-                        </span>
-                    </div>
                     <a
                         href={profile.url}
                         target="_blank"
@@ -97,6 +87,6 @@ export default function ProfilePreviewCard({ profile }: ProfilePreviewCardProps)
                     </a>
                 </div>
             </div>
-        </motion.div>
+        </div>
     );
 }
