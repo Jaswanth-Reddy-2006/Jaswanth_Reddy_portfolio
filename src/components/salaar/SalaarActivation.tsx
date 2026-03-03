@@ -46,7 +46,7 @@ function PrabhasBlink() {
         >
             <div className="absolute inset-0 w-full h-full">
                 <img
-                    src="/assets/salaar/prabhas.jpg"
+                    src={`${import.meta.env.BASE_URL}assets/salaar/prabhas.jpg`}
                     alt="REBEL STAR SALAAR"
                     className="w-full h-full object-cover brightness-[0.5] contrast-[1.3]"
                 />

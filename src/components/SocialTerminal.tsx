@@ -2,7 +2,6 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { useState } from 'react';
 import { Github, Code2, Trophy, Linkedin } from 'lucide-react';
 import { useSettings } from '../context/SettingsContext';
-import AudioIcon from './AudioIcon';
 import type { SocialProfile } from '../data/portfolio';
 import ProfilePreviewCard from './ProfilePreviewCard';
 
@@ -44,10 +43,6 @@ export default function SocialTerminal({ socials }: SocialTerminalProps) {
                             />
                         )}
                         <div className="flex flex-col items-center mb-8 gap-4">
-                            <AudioIcon
-                                text="Connect with me on various professional platforms."
-                                salaarText="CONNECT_WITH_COMMANDER: Establishing high-priority uplink. Signals verified."
-                            />
                         </div>
                         <h2 className={`text-2xl md:text-5xl font-bold tracking-tight mb-4 px-4 transition-colors duration-700 ${isSalaarMode ? 'text-white font-mono uppercase tracking-[0.2em]' : 'text-darkText'
                             }`}>

@@ -6,25 +6,27 @@ import ChapterFour from './chapters/ChapterFour';
 import ChapterFive from './chapters/ChapterFive';
 import ChapterSix from './chapters/ChapterSix';
 import RealWorldExperience from './RealWorldExperience';
-import FloatingBackground from './FloatingBackground';
+import GlobalCinematicBackground from './GlobalCinematicBackground';
 import CustomCursor from './CustomCursor';
+import ScrollAnimSection from './ScrollAnimSection';
+import ScrollProgressIndicator from './ScrollProgressIndicator';
 import { portfolioData } from '../data/portfolio';
-import { motion, useScroll, useTransform, useSpring } from 'framer-motion';
+import { motion, AnimatePresence } from 'framer-motion';
 import SocialTerminal from './SocialTerminal';
 import PortfolioHUD from './PortfolioHUD';
-import SalaarBackground from './SalaarBackground';
 import SalaarHUD from './salaar/SalaarHUD';
 import SalaarActivation from './salaar/SalaarActivation';
+import SalaarScrollScene from './salaar/SalaarScrollScene';
 import { useSettings } from '../context/SettingsContext';
-import { AnimatePresence } from 'framer-motion';
 import { useState, useEffect } from 'react';
 import InterviewMode from './InterviewMode';
+
+const PREMIUM_EASE = [0.22, 1, 0.36, 1] as const;
 
 export default function FullPortfolio() {
     const { isSalaarMode } = useSettings();
     const [isActivating, setIsActivating] = useState(false);
     const [showSolarFlare, setShowSolarFlare] = useState(false);
-    const { scrollYProgress } = useScroll();
 
     useEffect(() => {
         if (isSalaarMode) {
@@ -32,30 +34,11 @@ export default function FullPortfolio() {
         } else {
             setIsActivating(false);
         }
-
-        // Always scroll to top on mode change
         window.scrollTo({ top: 0, behavior: 'smooth' });
     }, [isSalaarMode]);
 
-    const smoothProgress = useSpring(scrollYProgress, {
-        stiffness: 100,
-        damping: 30,
-        restDelta: 0.001
-    });
-
-    const backgroundColor = useTransform(
-        smoothProgress,
-        [0, 0.2, 0.4, 0.6, 0.8, 1],
-        isSalaarMode
-            ? ["#0a0000", "#1a0000", "#2b0000", "#3c0000", "#4d0000", "#5e0000"]
-            : ["#F8F6F2", "#F1EFE7", "#EBE9E0", "#E5E3D9", "#DFDDD2", "#D9D7CC"]
-    );
-
     return (
-        <motion.div
-            style={{ backgroundColor }}
-            className={`min-h-screen transition-colors duration-1000 relative ${isSalaarMode ? 'text-white' : 'text-darkText'}`}
-        >
+        <div className={`min-h-screen transition-colors duration-1000 relative ${isSalaarMode ? 'text-white' : 'text-darkText'}`}>
             <AnimatePresence>
                 {isActivating && (
                     <SalaarActivation onComplete={() => {
@@ -81,164 +64,114 @@ export default function FullPortfolio() {
 
             <div className={`grainy-overlay ${isSalaarMode ? 'opacity-[0.03]' : ''}`} />
             <CustomCursor />
-
-            <AnimatePresence mode="wait">
-                {isSalaarMode ? (
-                    <motion.div
-                        key="salaar-bg"
-                        initial={{ opacity: 0 }}
-                        animate={{ opacity: 1 }}
-                        exit={{ opacity: 0 }}
-                        transition={{ duration: 1 }}
-                    >
-                        <SalaarBackground />
-                    </motion.div>
-                ) : (
-                    <motion.div
-                        key="zen-bg"
-                        initial={{ opacity: 0 }}
-                        animate={{ opacity: 1 }}
-                        exit={{ opacity: 0 }}
-                        transition={{ duration: 1 }}
-                    >
-                        <FloatingBackground />
-                    </motion.div>
-                )}
-            </AnimatePresence>
+            <GlobalCinematicBackground />
 
             <Navbar />
             <PortfolioHUD />
             <SalaarHUD />
-
-
-            {/* Background Atmosphere */}
-            <div className="fixed inset-0 z-[-1] pointer-events-none overflow-hidden">
-                {isSalaarMode ? (
-                    <>
-                        <div className="absolute inset-0 bg-black" />
-                        <div className="absolute inset-0 bg-[url('https://www.transparenttextures.com/patterns/carbon-fibre.png')] opacity-10" />
-                        <motion.div
-                            animate={{ y: ["-100%", "100%"] }}
-                            transition={{ duration: 12, repeat: Infinity, ease: "linear" }}
-                            className="absolute inset-x-0 h-[1px] bg-red-900/20"
-                        />
-                        <div className="absolute inset-0 bg-gradient-to-tr from-red-950/5 via-transparent to-red-950/5" />
-                    </>
-                ) : (
-                    <div className="absolute inset-0 bg-gradient-to-b from-warmWhite/50 to-transparent" />
-                )}
-            </div>
+            <ScrollProgressIndicator />
 
             <main className="relative z-10 max-w-6xl mx-auto px-6 py-20 space-y-40">
-                {/* Chapter 1: Introduction */}
-                <motion.section
-                    id="chapter-1"
-                    initial={{ opacity: 0, y: 20 }}
-                    whileInView={{ opacity: 1, y: 0 }}
-                    viewport={{ once: true, margin: "-100px" }}
-                    transition={{
-                        duration: 0.8,
-                        ease: "easeOut"
-                    }}
-                >
+                {/* Chapter 1: Introduction — hero parallax handled inside */}
+                <section id="chapter-1">
                     <ChapterOne
                         name={portfolioData.name}
                         tagline={portfolioData.tagline}
                         introduction={portfolioData.introduction}
                     />
-                </motion.section>
+                </section>
 
                 {/* Chapter 2: Work & Case Studies */}
-                <motion.section
-                    id="chapter-2"
-                    initial={{ opacity: 0 }}
-                    whileInView={{ opacity: 1 }}
-                    viewport={{ once: true, margin: "-100px" }}
-                    transition={{ duration: 0.8 }}
-                >
+                <ScrollAnimSection id="chapter-2" delay={0.05}>
                     <ChapterTwo projects={portfolioData.projects} />
-                </motion.section>
+                </ScrollAnimSection>
+
+                {/* Salaar: Cinematic 300vh scroll scene between Ch2 and Ch3 */}
+                {isSalaarMode && (
+                    <motion.div
+                        initial={{ opacity: 0 }}
+                        whileInView={{ opacity: 1 }}
+                        viewport={{ once: true }}
+                        transition={{ duration: 1 }}
+                        className="!my-0 -mx-6"
+                    >
+                        <SalaarScrollScene />
+                    </motion.div>
+                )}
 
                 {/* Real World Experience */}
-                <motion.section
-                    id="chapter-experience"
-                    initial={{ opacity: 0, y: 20 }}
-                    whileInView={{ opacity: 1, y: 0 }}
-                    viewport={{ once: true, margin: "-100px" }}
-                    transition={{ duration: 0.8 }}
-                >
+                <ScrollAnimSection id="chapter-experience" delay={0.05}>
                     <RealWorldExperience experience={portfolioData.experience} />
-                </motion.section>
+                </ScrollAnimSection>
 
                 {/* Chapter 3: Skills & Intelligence */}
-                <motion.section
-                    id="chapter-3"
-                    initial={{ opacity: 0, y: 20 }}
-                    whileInView={{ opacity: 1, y: 0 }}
-                    viewport={{ once: true, margin: "-100px" }}
-                    transition={{ duration: 0.8 }}
-                >
+                <ScrollAnimSection id="chapter-3" delay={0.05}>
                     <ChapterThree skills={portfolioData.skills} />
-                </motion.section>
+                </ScrollAnimSection>
 
                 {/* Chapter 4: Education */}
-                <motion.section
-                    id="chapter-4"
-                    initial={{ opacity: 0, y: 20 }}
-                    whileInView={{ opacity: 1, y: 0 }}
-                    viewport={{ once: true, margin: "-100px" }}
-                    transition={{ duration: 0.8 }}
-                >
+                <ScrollAnimSection id="chapter-4" delay={0.05}>
                     <ChapterFour education={portfolioData.education} />
-                </motion.section>
+                </ScrollAnimSection>
 
                 {/* Chapter 6: Certifications */}
-                <motion.section
-                    id="chapter-6"
-                    initial={{ opacity: 0, y: 20 }}
-                    whileInView={{ opacity: 1, y: 0 }}
-                    viewport={{ once: true, margin: "-100px" }}
-                    transition={{ duration: 0.8 }}
-                >
+                <ScrollAnimSection id="chapter-6" delay={0.05}>
                     <ChapterSix certifications={portfolioData.certifications} />
-                </motion.section>
+                </ScrollAnimSection>
 
                 {/* Social Profiles & External Uplink */}
                 <SocialTerminal socials={portfolioData.socials} />
 
                 {/* Chapter 5: The Vision */}
-                <motion.section
-                    id="chapter-5"
-                    initial={{ opacity: 0, y: 20 }}
-                    whileInView={{ opacity: 1, y: 0 }}
-                    viewport={{ once: true, margin: "-100px" }}
-                    transition={{ duration: 0.8 }}
-                >
+                <ScrollAnimSection id="chapter-5" delay={0.05}>
                     <ChapterFive vision={portfolioData.vision} />
-                </motion.section>
-
+                </ScrollAnimSection>
 
                 {/* AI Interview Mode */}
-                <motion.section
-                    initial={{ opacity: 0, y: 20 }}
-                    whileInView={{ opacity: 1, y: 0 }}
-                    viewport={{ once: true, margin: "-100px" }}
-                    transition={{ duration: 0.8 }}
-                >
+                <ScrollAnimSection delay={0.05}>
                     <InterviewMode />
-                </motion.section>
+                </ScrollAnimSection>
             </main>
 
+            {/* ── FOOTER ── */}
             <footer className={`py-32 px-6 border-t transition-all duration-1000 ${isSalaarMode
                 ? 'bg-black/60 border-red-900/20'
                 : 'bg-white/30 border-softGray'
-                } backdrop-blur-sm`}>
-                <div className="max-w-4xl mx-auto text-center">
+                } backdrop-blur-sm relative overflow-hidden`}>
+
+                {/* White mode: diagonal light beam on scroll-into-view */}
+                {!isSalaarMode && (
                     <motion.div
-                        initial={{ opacity: 0, y: 20 }}
-                        whileInView={{ opacity: 1, y: 0 }}
+                        initial={{ x: '-120%', opacity: 0 }}
+                        whileInView={{ x: '200%', opacity: [0, 0.4, 0] }}
                         viewport={{ once: true }}
-                        transition={{ duration: 0.8 }}
+                        transition={{ duration: 2.5, ease: 'easeInOut', delay: 0.3 }}
+                        className="absolute top-0 bottom-0 w-[80px] pointer-events-none"
+                        style={{
+                            background: 'linear-gradient(to right, transparent, rgba(107,140,186,0.12), transparent)',
+                            transform: 'skewX(-25deg)',
+                        }}
+                    />
+                )}
+
+                {/* Salaar: ambient red beam */}
+                {isSalaarMode && (
+                    <motion.div
+                        animate={{ x: ['-100%', '200%'] }}
+                        transition={{ duration: 8, repeat: Infinity, ease: 'linear', delay: 1 }}
+                        className="absolute top-0 bottom-0 w-[40px] pointer-events-none opacity-10"
+                        style={{
+                            background: 'linear-gradient(to right, transparent, rgba(220,38,38,0.8), transparent)',
+                        }}
+                    />
+                )}
+
+                <div className="max-w-4xl mx-auto text-center relative z-10">
+                    <motion.div
+                        initial={{ opacity: 0, y: 60, scale: 0.98, filter: 'blur(10px)' }}
+                        whileInView={{ opacity: 1, y: 0, scale: 1, filter: 'blur(0px)' }}
+                        viewport={{ once: true }}
+                        transition={{ duration: 0.9, ease: PREMIUM_EASE }}
                     >
                         <h2 className="text-2xl md:text-4xl font-bold text-darkText mb-6 tracking-tight px-4">
                             Currently building scalable web systems.
@@ -248,21 +181,54 @@ export default function FullPortfolio() {
                         </p>
                         <div className="flex flex-col items-center gap-6">
                             <div className="flex flex-wrap justify-center gap-8">
-                                <a href="mailto:jaswanthre9@gmail.com" className="text-lightText hover:text-mutedBlue transition-colors flex items-center gap-2">
-                                    <span className="font-mono text-sm">jaswanthre9@gmail.com</span>
-                                </a>
-                                <a href="https://www.linkedin.com/in/jasreaug/" target="_blank" rel="noopener noreferrer" className="text-lightText hover:text-mutedBlue transition-colors flex items-center gap-2">
-                                    <span className="font-mono text-sm">LinkedIn</span>
-                                </a>
-                                <div className="text-lightText flex items-center gap-2">
+                                {/* Social icons with elastic spring */}
+                                {[
+                                    { href: 'mailto:jaswanthre9@gmail.com', label: 'jaswanthre9@gmail.com' },
+                                    { href: 'https://www.linkedin.com/in/jasreaug/', label: 'LinkedIn' },
+                                ].map((link, i) => (
+                                    <motion.a
+                                        key={link.label}
+                                        href={link.href}
+                                        target={link.href.startsWith('http') ? '_blank' : undefined}
+                                        rel="noopener noreferrer"
+                                        initial={{ opacity: 0, y: 20 }}
+                                        whileInView={{ opacity: 1, y: 0 }}
+                                        viewport={{ once: true }}
+                                        transition={{
+                                            type: 'spring',
+                                            stiffness: 300,
+                                            damping: 20,
+                                            delay: 0.2 + i * 0.1,
+                                        }}
+                                        className="text-lightText hover:text-mutedBlue transition-colors flex items-center gap-2"
+                                    >
+                                        <span className="font-mono text-sm">{link.label}</span>
+                                    </motion.a>
+                                ))}
+                                <motion.div
+                                    initial={{ opacity: 0, y: 20 }}
+                                    whileInView={{ opacity: 1, y: 0 }}
+                                    viewport={{ once: true }}
+                                    transition={{ type: 'spring', stiffness: 300, damping: 20, delay: 0.4 }}
+                                    className="text-lightText flex items-center gap-2"
+                                >
                                     <span className="font-mono text-sm">+91 8008154808</span>
-                                </div>
+                                </motion.div>
                             </div>
-                            <div className="text-sm font-bold text-mutedBlue uppercase tracking-widest bg-mutedBlue/5 px-4 py-2 rounded-full border border-mutedBlue/10">
+
+                            {/* Breathing CTA button */}
+                            <motion.div
+                                animate={{ scale: [1, 1.02, 1] }}
+                                transition={{ duration: 3, repeat: Infinity, ease: 'easeInOut' }}
+                                className="text-sm font-bold text-mutedBlue uppercase tracking-widest bg-mutedBlue/5 px-4 py-2 rounded-full border border-mutedBlue/10"
+                            >
                                 Available for Internship
-                            </div>
+                            </motion.div>
+
                             <div className="flex flex-col items-center gap-2 mt-8 opacity-40">
-                                <span className="text-[9px] font-mono uppercase tracking-[0.3em]">{isSalaarMode ? 'SALAAR SIGNAL MATRIX' : 'System Live Matrix'}</span>
+                                <span className="text-[9px] font-mono uppercase tracking-[0.3em]">
+                                    {isSalaarMode ? 'SALAAR SIGNAL MATRIX' : 'System Live Matrix'}
+                                </span>
                                 <motion.div
                                     animate={{ opacity: [0.3, 1, 0.3] }}
                                     transition={{ duration: 3, repeat: Infinity }}
@@ -284,6 +250,6 @@ export default function FullPortfolio() {
                     </motion.div>
                 </div>
             </footer>
-        </motion.div>
+        </div>
     );
 }

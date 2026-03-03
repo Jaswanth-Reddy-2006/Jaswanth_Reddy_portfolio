@@ -4,7 +4,6 @@ import type { Certification } from '../../data/portfolio';
 import { useSettings } from '../../context/SettingsContext';
 import { useState } from 'react';
 import BattleGrid from '../salaar/BattleGrid';
-import ChapterBackground from '../ChapterBackground';
 
 interface ChapterSixProps {
     certifications: Certification[];
@@ -15,9 +14,7 @@ export default function ChapterSix({ certifications }: ChapterSixProps) {
     const [selectedCert, setSelectedCert] = useState<Certification | null>(null);
 
     return (
-        <section id="chapter-6" className={`py-20 px-6 max-w-7xl mx-auto relative overflow-hidden ${isSalaarMode ? 'bg-black' : ''}`}>
-            <ChapterBackground chapter={6} />
-            {isSalaarMode && <BattleGrid opacity={0.3} />}
+        <section id="chapter-6" className="py-20 px-6 max-w-7xl mx-auto relative overflow-hidden">
             <div className="relative z-10">
                 <motion.div
                     initial={{ opacity: 0, y: 20 }}
@@ -40,15 +37,26 @@ export default function ChapterSix({ certifications }: ChapterSixProps) {
                     {certifications.map((cert, index) => (
                         <motion.div
                             key={cert.id}
-                            initial={{ opacity: 0, x: index % 2 === 0 ? -20 : 20 }}
-                            whileInView={{ opacity: 1, x: 0 }}
-                            viewport={{ once: true }}
-                            transition={{ delay: index * 0.1 }}
-                            className={`p-6 md:p-8 border transition-all duration-500 group relative overflow-hidden ${isSalaarMode
-                                ? 'bg-black/60 border-red-950/30 rounded-none hover:border-red-600/50'
+                            initial={{ opacity: 0, y: 40, filter: 'blur(10px)' }}
+                            whileInView={{ opacity: 1, y: 0, filter: 'blur(0px)' }}
+                            viewport={{ once: true, margin: '-40px' }}
+                            transition={{ duration: 0.85, delay: index * 0.1, ease: [0.22, 1, 0.36, 1] }}
+                            className={`p-6 md:p-8 border transition-all duration-700 group relative overflow-hidden ${isSalaarMode
+                                ? 'bg-black/80 border-red-950/30 rounded-none hover:border-red-600/60 hover:shadow-[0_0_25px_rgba(220,38,38,0.12)]'
                                 : 'bg-white/50 border-softGray rounded-2xl hover:border-mutedBlue/20 hover:shadow-lg'
                                 }`}
                         >
+                            {/* Salaar cinematic light sweep on enter */}
+                            {isSalaarMode && (
+                                <motion.div
+                                    initial={{ x: '-120%', opacity: 0 }}
+                                    whileInView={{ x: '300%', opacity: [0, 0.5, 0] }}
+                                    viewport={{ once: true }}
+                                    transition={{ duration: 0.9, delay: index * 0.1 + 0.35, ease: 'easeInOut' }}
+                                    className="absolute top-0 bottom-0 w-[50px] pointer-events-none z-20"
+                                    style={{ background: 'linear-gradient(to right, transparent, rgba(220,38,38,0.25), transparent)', transform: 'skewX(-20deg)' }}
+                                />
+                            )}
                             {isSalaarMode && <BattleGrid isCard opacity={0.6} intensity="low" />}
                             <div className="flex justify-between items-start gap-4 relative z-10">
                                 <div>

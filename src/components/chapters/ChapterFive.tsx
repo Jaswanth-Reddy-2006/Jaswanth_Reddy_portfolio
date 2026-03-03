@@ -1,9 +1,5 @@
 import { motion } from 'framer-motion';
 import { useSettings } from '../../context/SettingsContext';
-import { Canvas } from '@react-three/fiber';
-import NetworkGraph from '../salaar/NetworkGraph';
-import AudioIcon from '../AudioIcon';
-import ChapterBackground from '../ChapterBackground';
 
 interface ChapterFiveProps {
     vision: string;
@@ -13,17 +9,7 @@ export default function ChapterFive({ vision }: ChapterFiveProps) {
     const { isSalaarMode } = useSettings();
 
     return (
-        <section id="chapter-5" className={`min-h-screen flex items-center justify-center px-6 py-20 transition-all duration-1000 relative overflow-hidden ${isSalaarMode ? 'bg-[#0a0000]' : 'bg-warmWhite'
-            }`}>
-            <ChapterBackground chapter={5} />
-            {isSalaarMode && (
-                <div className="absolute inset-0 z-0 pointer-events-none opacity-30">
-                    <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,_var(--tw-gradient-stops))] from-red-900/10 via-transparent to-transparent" />
-                    <Canvas dpr={[1, 2]}>
-                        <NetworkGraph />
-                    </Canvas>
-                </div>
-            )}
+        <section id="chapter-5" className="min-h-screen flex items-center justify-center px-6 py-20 relative overflow-hidden">
             <div className="max-w-4xl mx-auto text-center relative z-10">
                 <motion.div
                     initial={{ opacity: 0, y: 30 }}
@@ -31,12 +17,6 @@ export default function ChapterFive({ vision }: ChapterFiveProps) {
                     viewport={{ once: true }}
                     transition={{ duration: 0.8 }}
                 >
-                    <div className="flex justify-center mb-8">
-                        <AudioIcon
-                            text="This is my vision for the future. What I am becoming as an engineer and architect."
-                            salaarText="Khansaar Evolution Protocol: Synchronizing future strategic objectives and planetary dominance frameworks."
-                        />
-                    </div>
 
                     <motion.h2
                         initial={{ opacity: 0, y: 20 }}

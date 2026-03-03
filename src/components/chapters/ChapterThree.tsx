@@ -5,9 +5,7 @@ import { useState } from 'react';
 import { useSettings } from '../../context/SettingsContext';
 import { Canvas } from '@react-three/fiber';
 import SkillMonoliths from '../salaar/SkillMonoliths';
-import AudioIcon from '../AudioIcon';
 import BattleGrid from '../salaar/BattleGrid';
-import ChapterBackground from '../ChapterBackground';
 
 interface ChapterThreeProps {
     skills: SkillCategory[];
@@ -20,15 +18,46 @@ const iconMap: Record<string, any> = {
     Wrench,
 };
 
+const PREMIUM_EASE = [0.22, 1, 0.36, 1] as const;
+
+// Light sweep overlay for white mode skill grid
+function LightSweep({ trigger }: { trigger: boolean }) {
+    return (
+        <AnimatePresence>
+            {trigger && (
+                <motion.div
+                    initial={{ x: '-120%', opacity: 0 }}
+                    animate={{ x: '300%', opacity: [0, 0.8, 0] }}
+                    transition={{ duration: 1.2, ease: 'easeInOut' }}
+                    className="absolute top-0 bottom-0 w-[60px] pointer-events-none z-20"
+                    style={{
+                        background: 'linear-gradient(to right, transparent, rgba(107,140,186,0.15), transparent)',
+                        transform: 'skewX(-20deg)',
+                    }}
+                />
+            )}
+        </AnimatePresence>
+    );
+}
+
 export default function ChapterThree({ skills }: ChapterThreeProps) {
     const { isSalaarMode } = useSettings();
     const [expandedSkill, setExpandedSkill] = useState<string | null>(skills[0]?.category || null);
+    const [sweepTrigger, setSweepTrigger] = useState(false);
+
+    const handleCategorySelect = (cat: string) => {
+        setExpandedSkill(cat);
+        setSweepTrigger(false);
+        setTimeout(() => setSweepTrigger(true), 50);
+    };
 
     return (
-        <section id="chapter-3" className={`min-h-screen px-4 md:px-6 py-16 md:py-24 transition-all duration-1000 relative overflow-hidden ${isSalaarMode ? 'bg-[#0a0000]' : 'bg-white'
-            }`}>
-            <ChapterBackground chapter={3} />
+        <section
+            id="chapter-3"
+            className="min-h-screen px-4 md:px-6 py-16 md:py-24 relative overflow-hidden"
+        >
             {isSalaarMode && <BattleGrid opacity={0.5} />}
+
             {/* Ambient Background Elements */}
             {isSalaarMode && (
                 <div className="absolute inset-0 z-0 pointer-events-none">
@@ -43,25 +72,18 @@ export default function ChapterThree({ skills }: ChapterThreeProps) {
 
             <div className="max-w-6xl mx-auto relative z-10">
                 <motion.div
-                    initial={{ opacity: 0, y: 30 }}
-                    whileInView={{ opacity: 1, y: 0 }}
+                    initial={{ opacity: 0, y: 60, scale: 0.98, filter: 'blur(10px)' }}
+                    whileInView={{ opacity: 1, y: 0, scale: 1, filter: 'blur(0px)' }}
                     viewport={{ once: true }}
-                    transition={{ duration: 0.8 }}
+                    transition={{ duration: 0.9, ease: PREMIUM_EASE }}
                     className="text-center mb-12 md:mb-20"
                 >
-                    <div className="flex justify-center mb-6">
-                        <AudioIcon
-                            text="Welcome to my Technical Arsenal. This section showcases the core technologies and engineering tools I use to build robust software."
-                            salaarText="TACTICAL_ARMOURY: Synchronizing high-performance warfare modules and engineering tools."
-                        />
-                    </div>
-                    <h2 className={`text-3xl sm:text-4xl md:text-6xl font-bold mb-6 tracking-tight flex flex-col md:flex-row items-center justify-center gap-4 transition-colors duration-700 ${isSalaarMode ? 'text-white font-mono uppercase tracking-widest' : 'text-darkText'
-                        }`}>
+                    <h2 className={`text-3xl sm:text-4xl md:text-6xl font-bold mb-6 tracking-tight flex flex-col md:flex-row items-center justify-center gap-4 transition-colors duration-700 ${isSalaarMode ? 'text-white font-mono uppercase tracking-widest' : 'text-darkText'}`}>
                         {isSalaarMode && (
                             <div className="relative w-12 h-12 md:w-20 md:h-20">
                                 <motion.div
                                     animate={{ rotate: 360 }}
-                                    transition={{ duration: 10, repeat: Infinity, ease: "linear" }}
+                                    transition={{ duration: 10, repeat: Infinity, ease: 'linear' }}
                                     className={`absolute inset-0 border-2 border-dashed rounded-full border-red-900/40`}
                                 />
                                 <div className="absolute inset-0 flex items-center justify-center">
@@ -71,8 +93,7 @@ export default function ChapterThree({ skills }: ChapterThreeProps) {
                         )}
                         {isSalaarMode ? 'TACTICAL' : 'Technical'} <span className={`${isSalaarMode ? 'text-red-700' : 'text-mutedBlue italic serif'}`}>{isSalaarMode ? 'ARMOURY' : 'Arsenal'}</span>
                     </h2>
-                    <p className={`text-lg md:text-xl max-w-2xl mx-auto font-light leading-relaxed px-4 transition-colors duration-700 ${isSalaarMode ? 'text-white/40 font-mono' : 'text-lightText'
-                        }`}>
+                    <p className={`text-lg md:text-xl max-w-2xl mx-auto font-light leading-relaxed px-4 transition-colors duration-700 ${isSalaarMode ? 'text-white/40 font-mono' : 'text-lightText'}`}>
                         {isSalaarMode
                             ? '[ARMOURY_SYSTEMS]: LOCK_LOADED. All technical units optimized for high-intensity deployment.'
                             : 'A curated collection of technologies used to architect scalable, high-impact systems.'}
@@ -87,7 +108,7 @@ export default function ChapterThree({ skills }: ChapterThreeProps) {
                         return (
                             <button
                                 key={skillCategory.category}
-                                onClick={() => setExpandedSkill(skillCategory.category)}
+                                onClick={() => handleCategorySelect(skillCategory.category)}
                                 className={`flex-shrink-0 snap-center px-5 py-3 rounded-xl border transition-all flex items-center gap-3 ${isActive
                                     ? isSalaarMode ? 'bg-red-700 text-white border-red-900 shadow-lg shadow-red-900/20' : 'bg-mutedBlue text-white border-mutedBlue shadow-lg'
                                     : isSalaarMode ? 'bg-black/40 text-white/40 border-red-900/10' : 'bg-white text-lightText border-softGray'}`}
@@ -100,7 +121,7 @@ export default function ChapterThree({ skills }: ChapterThreeProps) {
                 </div>
 
                 <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 md:gap-12 items-start">
-                    {/* Desktop: Vertical Category Selection */}
+                    {/* Desktop: Vertical Category Selection with stagger */}
                     <div className="hidden lg:block lg:col-span-5 space-y-4">
                         {skills.map((skillCategory, index) => {
                             const Icon = iconMap[skillCategory.icon] || Code2;
@@ -109,13 +130,13 @@ export default function ChapterThree({ skills }: ChapterThreeProps) {
                             return (
                                 <motion.div
                                     key={skillCategory.category}
-                                    initial={{ opacity: 0, x: -20 }}
-                                    whileInView={{ opacity: 1, x: 0 }}
-                                    viewport={{ once: true }}
-                                    transition={{ duration: 0.5, delay: index * 0.1 }}
-                                    onClick={() => setExpandedSkill(skillCategory.category)}
+                                    initial={{ opacity: 0, x: -40, filter: 'blur(8px)' }}
+                                    whileInView={{ opacity: 1, x: 0, filter: 'blur(0px)' }}
+                                    viewport={{ once: true, margin: '-50px' }}
+                                    transition={{ duration: 0.7, delay: index * 0.1, ease: PREMIUM_EASE }}
+                                    onClick={() => handleCategorySelect(skillCategory.category)}
                                     className={`group cursor-pointer p-6 transition-all duration-500 border relative ${isActive
-                                        ? isSalaarMode ? 'bg-red-900/10 border-red-700 rounded-none shadow-[inset_0_0_20px_rgba(153,0,0,0.1)]' : 'bg-white shadow-xl border-mutedBlue/20 scale-102 rounded-2xl'
+                                        ? isSalaarMode ? 'bg-red-900/10 border-red-700 rounded-none shadow-[inset_0_0_20px_rgba(153,0,0,0.1)] animate-red-glow' : 'bg-white shadow-xl border-mutedBlue/20 scale-102 rounded-2xl'
                                         : isSalaarMode ? 'bg-transparent border-transparent text-white/40 hover:text-white rounded-none border-l-2' : 'bg-transparent border-transparent hover:bg-mutedBlue/5 rounded-2xl'
                                         }`}
                                 >
@@ -144,7 +165,7 @@ export default function ChapterThree({ skills }: ChapterThreeProps) {
                                         </div>
                                         {isActive && (
                                             <motion.div layoutId="active-indicator">
-                                                <ArrowRight className={isSalaarMode ? "text-red-700" : "text-mutedBlue"} size={20} />
+                                                <ArrowRight className={isSalaarMode ? 'text-red-700' : 'text-mutedBlue'} size={20} />
                                             </motion.div>
                                         )}
                                     </div>
@@ -171,31 +192,48 @@ export default function ChapterThree({ skills }: ChapterThreeProps) {
                                 {isSalaarMode && (
                                     <div className="absolute top-0 left-0 w-full h-[1px] bg-gradient-to-r from-transparent via-red-700 to-transparent opacity-50 z-10" />
                                 )}
+                                {/* White mode light sweep */}
+                                {!isSalaarMode && <LightSweep trigger={sweepTrigger} />}
+
                                 <div className="space-y-6 md:space-y-8 relative z-10">
                                     <div className="flex items-center justify-between mb-2">
-                                        <h4 className={`text-xs font-bold uppercase tracking-widest transition-colors duration-700 ${isSalaarMode ? 'text-red-600' : 'text-mutedBlue lg:hidden'
-                                            }`}>
+                                        <h4 className={`text-xs font-bold uppercase tracking-widest transition-colors duration-700 ${isSalaarMode ? 'text-red-600' : 'text-mutedBlue lg:hidden'}`}>
                                             {isSalaarMode ? `ACTIVE_CORE: ${expandedSkill}` : `Active Core Module: ${expandedSkill}`}
                                         </h4>
-                                        <AudioIcon
-                                            text={`Overview of ${expandedSkill}: ${skills.find(s => s.category === expandedSkill)?.skills.join(', ')}.`}
-                                            salaarText={`UNIT_SYNC: Integrated ${expandedSkill} modules into tactical framework.`}
-                                        />
                                     </div>
                                     <div className="flex flex-wrap gap-2 md:gap-4">
                                         {skills.find(s => s.category === expandedSkill)?.skills.map((skill, i) => (
                                             <motion.div
                                                 key={skill}
-                                                initial={{ scale: 0.8, opacity: 0 }}
-                                                animate={{ scale: 1, opacity: 1 }}
-                                                transition={{ duration: 0.3, delay: i * 0.05 }}
-                                                className={`px-4 py-2 md:px-6 md:py-3 transition-all duration-500 group/skill relative overflow-hidden flex items-center gap-2 ${isSalaarMode
+                                                initial={{ scale: 0.7, opacity: 0, filter: 'blur(8px)' }}
+                                                animate={{ scale: 1, opacity: 1, filter: 'blur(0px)' }}
+                                                transition={{
+                                                    duration: 0.5,
+                                                    delay: i * 0.07,
+                                                    ease: PREMIUM_EASE,
+                                                }}
+                                                className={`px-4 py-2 md:px-6 md:py-3 transition-all duration-500 group/skill relative overflow-hidden flex items-center gap-2 border ${isSalaarMode
                                                     ? 'bg-red-900/10 text-white border-red-900/30 rounded-none hover:bg-red-900/20 hover:border-red-600 shadow-[0_0_10px_rgba(153,0,0,0.1)]'
-                                                    : 'bg-white text-darkText border-softGray hover:border-mutedBlue/30 shadow-sm rounded-xl'
+                                                    : 'bg-white text-darkText border-softGray hover:border-mutedBlue/30 shadow-sm rounded-xl animate-float-skill'
                                                     }`}
+                                                style={!isSalaarMode ? { animationDelay: `${i * 0.3}s` } : {}}
                                             >
                                                 {isSalaarMode && <ShieldCheck size={12} className="text-red-600" />}
                                                 <span className={`text-sm sm:text-base md:text-lg font-medium ${isSalaarMode ? 'font-mono' : ''}`}>{skill}</span>
+
+                                                {/* Skill Chip energy scan line */}
+                                                <motion.div
+                                                    initial={{ x: '-100%' }}
+                                                    animate={{ x: '100%' }}
+                                                    transition={{
+                                                        duration: 2,
+                                                        repeat: Infinity,
+                                                        delay: i * 0.2,
+                                                        ease: "linear"
+                                                    }}
+                                                    className={`absolute inset-0 w-1/2 h-full opacity-20 pointer-events-none ${isSalaarMode ? 'bg-gradient-to-r from-transparent via-red-600 to-transparent' : 'bg-gradient-to-r from-transparent via-mutedBlue/30 to-transparent'}`}
+                                                    style={{ skewX: '-20deg' }}
+                                                />
                                             </motion.div>
                                         ))}
                                     </div>
@@ -205,8 +243,7 @@ export default function ChapterThree({ skills }: ChapterThreeProps) {
                     </div>
                 </div>
 
-                <div className={`pt-6 md:pt-8 border-t mt-12 transition-colors duration-700 ${isSalaarMode ? 'border-red-900/10' : 'border-softGray/50'
-                    }`}>
+                <div className={`pt-6 md:pt-8 border-t mt-12 transition-colors duration-700 ${isSalaarMode ? 'border-red-900/10' : 'border-softGray/50'}`}>
                     <div className="flex items-center gap-3 italic">
                         <div className={`w-8 md:w-12 h-[1px] ${isSalaarMode ? 'bg-red-600/30' : 'bg-mutedBlue/30'}`} />
                         <p className={`text-[10px] md:text-sm transition-colors duration-700 ${isSalaarMode ? 'text-white/40 font-mono' : 'text-lightText'}`}>

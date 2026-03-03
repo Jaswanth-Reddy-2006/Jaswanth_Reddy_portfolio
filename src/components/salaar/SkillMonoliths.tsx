@@ -14,28 +14,54 @@ function Monolith({ position, color }: MonolithProps) {
 
     useFrame((state) => {
         if (meshRef.current) {
-            meshRef.current.rotation.y += 0.01;
-            meshRef.current.position.y += Math.sin(state.clock.elapsedTime + position[0]) * 0.005;
+            meshRef.current.rotation.y += 0.005;
+            meshRef.current.position.y += Math.sin(state.clock.elapsedTime * 0.5 + position[0]) * 0.05;
         }
     });
 
     return (
         <group position={position}>
-            <Float speed={2} rotationIntensity={0.5} floatIntensity={0.5}>
+            <Float speed={1.5} rotationIntensity={0.2} floatIntensity={0.5}>
+                {/* Main Crystal/Monolith Body */}
                 <mesh ref={meshRef}>
-                    <boxGeometry args={[1, 2.5, 0.2]} />
+                    <boxGeometry args={[1, 2.5, 0.4]} />
                     <meshStandardMaterial
-                        color="#111"
+                        color="#0a0a0a"
                         metalness={1}
-                        roughness={0}
+                        roughness={0.1}
                         emissive={color}
-                        emissiveIntensity={0.2}
+                        emissiveIntensity={0.1}
                     />
-                    {/* Neon Border lines */}
+
+                    {/* Energy Core Pulse */}
+                    <mesh position={[0, 0, 0]} scale={[0.2, 0.8, 0.2]}>
+                        <boxGeometry args={[1, 1, 1]} />
+                        <meshStandardMaterial
+                            color={color}
+                            emissive={color}
+                            emissiveIntensity={5}
+                            transparent
+                            opacity={0.6}
+                        />
+                    </mesh>
+
+                    {/* Edge Highlights */}
                     <lineSegments>
-                        <edgesGeometry args={[new THREE.BoxGeometry(1, 2.5, 0.2)]} />
-                        <lineBasicMaterial color={color} />
+                        <edgesGeometry args={[new THREE.BoxGeometry(1, 2.5, 0.4)]} />
+                        <lineBasicMaterial color={color} transparent opacity={0.6} blending={THREE.AdditiveBlending} />
                     </lineSegments>
+                </mesh>
+
+                {/* Ground Reflection / Glow Ring */}
+                <mesh rotation={[-Math.PI / 2, 0, 0]} position={[0, -1.8, 0]}>
+                    <ringGeometry args={[0.5, 1.2, 32]} />
+                    <meshStandardMaterial
+                        color={color}
+                        transparent
+                        opacity={0.15}
+                        side={THREE.DoubleSide}
+                        blending={THREE.AdditiveBlending}
+                    />
                 </mesh>
             </Float>
         </group>

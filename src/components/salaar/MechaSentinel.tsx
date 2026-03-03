@@ -3,7 +3,6 @@ import { Canvas, useFrame } from '@react-three/fiber';
 import { Float, PerspectiveCamera, Torus, Box, Sphere } from '@react-three/drei';
 import * as THREE from 'three';
 import { motion, AnimatePresence } from 'framer-motion';
-import AudioIcon from '../AudioIcon';
 
 interface ArmProps {
     position: [number, number, number];
@@ -54,6 +53,46 @@ function MechaArm({ position, rotation, isLeft, mouse }: ArmProps) {
     );
 }
 
+interface LegProps {
+    position: [number, number, number];
+    rotation: [number, number, number];
+}
+
+function MechaLeg({ position, rotation }: LegProps) {
+    const legRef = useRef<THREE.Group>(null);
+    useFrame((state) => {
+        if (legRef.current) {
+            const t = state.clock.elapsedTime;
+            legRef.current.rotation.x = rotation[0] + Math.sin(t * 0.5) * 0.05;
+        }
+    });
+
+    return (
+        <group ref={legRef} position={position} rotation={rotation}>
+            {/* Upper Leg */}
+            <mesh>
+                <cylinderGeometry args={[0.07, 0.05, 0.6]} />
+                <meshStandardMaterial color="#222" metalness={0.9} roughness={0.1} />
+            </mesh>
+            {/* Joint */}
+            <Sphere position={[0, -0.3, 0]} args={[0.08, 16, 16]}>
+                <meshStandardMaterial color="#444" metalness={1} roughness={0.2} />
+            </Sphere>
+            {/* Lower Leg */}
+            <group position={[0, -0.6, 0]}>
+                <mesh>
+                    <cylinderGeometry args={[0.05, 0.04, 0.6]} />
+                    <meshStandardMaterial color="#111" metalness={0.8} />
+                </mesh>
+                {/* Foot/Base */}
+                <Box position={[0, -0.3, 0.05]} args={[0.15, 0.05, 0.25]}>
+                    <meshStandardMaterial color="#1a1a1a" metalness={1} />
+                </Box>
+            </group>
+        </group>
+    );
+}
+
 interface MechaBodyProps {
     mouse: { x: number; y: number };
     state: string;
@@ -90,24 +129,33 @@ function MechaBody({ mouse, state: mechaState }: MechaBodyProps) {
 
     return (
         <group ref={groupRef}>
+            {/* Main Torso */}
             <mesh>
                 <boxGeometry args={[0.8, 1, 0.6]} />
-                <meshStandardMaterial color="#111" metalness={1} roughness={0.1} />
+                <meshStandardMaterial
+                    color="#0a0a0a"
+                    metalness={0.9}
+                    roughness={0.1}
+                    envMapIntensity={2}
+                />
             </mesh>
+            {/* Core Reactor */}
             <Sphere position={[0, 0, 0.31]} args={[0.2, 32, 32]}>
-                <meshStandardMaterial color="#990000" emissive="#990000" emissiveIntensity={5} transparent opacity={0.8} />
+                <meshStandardMaterial color="#ff0000" emissive="#ff0000" emissiveIntensity={5} transparent opacity={0.8} />
             </Sphere>
             <Torus position={[0, 0, 0.31]} args={[0.25, 0.02, 16, 100]} rotation={[0, 0, 0]}>
-                <meshStandardMaterial color="#990000" emissive="#990000" />
+                <meshStandardMaterial color="#cc0000" emissive="#ff0000" />
             </Torus>
 
+            {/* Back Pack/Power Unit */}
             <Box position={[0, 0, -0.4]} args={[0.6, 0.8, 0.3]}>
-                <meshStandardMaterial color="#222" />
+                <meshStandardMaterial color="#1a1a1a" metalness={1} roughness={0.3} />
             </Box>
 
+            {/* Head Unit */}
             <group ref={headRef} position={[0, 0.7, 0]}>
                 <Box args={[0.6, 0.5, 0.5]}>
-                    <meshStandardMaterial color="#222" metalness={1} roughness={0} />
+                    <meshStandardMaterial color="#111" metalness={1} roughness={0.05} />
                 </Box>
                 <mesh position={[0, 0, 0.26]}>
                     <planeGeometry args={[0.5, 0.3]} />
@@ -115,20 +163,24 @@ function MechaBody({ mouse, state: mechaState }: MechaBodyProps) {
                 </mesh>
                 <mesh ref={leftEyeRef} position={[-0.15, 0.05, 0.31]}>
                     <planeGeometry args={[0.1, 0.15]} />
-                    <meshStandardMaterial color="#990000" emissive="#990000" emissiveIntensity={2} />
+                    <meshStandardMaterial color="#ff0000" emissive="#ff6666" emissiveIntensity={2} />
                 </mesh>
                 <mesh ref={rightEyeRef} position={[0.15, 0.05, 0.31]}>
                     <planeGeometry args={[0.1, 0.15]} />
-                    <meshStandardMaterial color="#990000" emissive="#990000" emissiveIntensity={2} />
+                    <meshStandardMaterial color="#ff0000" emissive="#ff6666" emissiveIntensity={2} />
                 </mesh>
                 <mesh position={[0.2, 0.3, 0]}>
                     <cylinderGeometry args={[0.01, 0.01, 0.3]} />
-                    <meshStandardMaterial color="#990000" />
+                    <meshStandardMaterial color="#cc0000" />
                 </mesh>
             </group>
 
+            {/* Limbs */}
             <MechaArm position={[-0.5, 0.2, 0]} rotation={[0, 0.2, 0.5]} isLeft={true} mouse={mouse} />
             <MechaArm position={[0.5, 0.2, 0]} rotation={[0, -0.2, -0.5]} isLeft={false} mouse={mouse} />
+
+            <MechaLeg position={[-0.25, -0.6, 0]} rotation={[0, 0, 0]} />
+            <MechaLeg position={[0.25, -0.6, 0]} rotation={[0, 0, 0]} />
         </group>
     );
 }
@@ -145,12 +197,6 @@ function HUDOverlay({ state }: { state: string }) {
                     <div className="flex flex-col text-right">
                         <span className="text-red-500 font-mono text-[8px] uppercase opacity-60">Status: {state}</span>
                         <span className="text-red-600 font-mono text-[10px] font-bold uppercase tracking-widest leading-tight">Khansaar_Sentinel_Unit</span>
-                    </div>
-                    <div className="pointer-events-auto">
-                        <AudioIcon
-                            text=""
-                            salaarText="Tactical Status Report: Systems fully operational. Khansaar strength levels redlining. Perimeter secure. Commander's directives being executed. Direct Kanchar protocol is active."
-                        />
                     </div>
                 </div>
                 <div className="flex justify-end gap-1">

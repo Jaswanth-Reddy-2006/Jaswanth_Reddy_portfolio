@@ -2,13 +2,9 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { ArrowRight, ArrowLeft, Crosshair } from 'lucide-react';
 import { useState } from 'react';
 import { useSettings } from '../../context/SettingsContext';
-import { Canvas } from '@react-three/fiber';
-import ProjectProjector from '../salaar/ProjectProjector';
 import type { Project } from '../../data/portfolio';
 import { HighlightGroup, HighlightItem } from '../SmartHighlight';
-import AudioIcon from '../AudioIcon';
 import BattleGrid from '../salaar/BattleGrid';
-import ChapterBackground from '../ChapterBackground';
 
 interface ChapterTwoProps {
     projects: Project[];
@@ -35,9 +31,7 @@ export default function ChapterTwo({ projects }: ChapterTwoProps) {
 
     if (caseStudyId && activeProject) {
         return (
-            <section className={`min-h-screen px-6 py-20 transition-all duration-700 ${isSalaarMode ? 'bg-[#0a0000]' : 'bg-warmWhite'}`}>
-                <ChapterBackground chapter={2} />
-                {isSalaarMode && <BattleGrid opacity={0.3} />}
+            <section className="min-n-screen px-6 py-20 relative z-10">
                 <div className="max-w-4xl mx-auto relative z-10">
                     <button
                         onClick={closeCaseStudy}
@@ -76,23 +70,7 @@ export default function ChapterTwo({ projects }: ChapterTwoProps) {
     }
 
     return (
-        <section id="chapter-2" className={`min-h-screen px-6 py-20 transition-all duration-1000 relative overflow-hidden ${isSalaarMode
-            ? 'bg-[#0a0000]'
-            : 'bg-gradient-to-b from-warmWhite to-softGray'
-            }`}>
-            <ChapterBackground chapter={2} />
-            {isSalaarMode && (
-                <>
-                    <BattleGrid opacity={0.4} intensity="medium" />
-                    <div className="absolute inset-0 z-0 pointer-events-none opacity-20">
-                        <div className="absolute inset-0">
-                            <Canvas dpr={[1, 1.5]}>
-                                <ProjectProjector />
-                            </Canvas>
-                        </div>
-                    </div>
-                </>
-            )}
+        <section id="chapter-2" className="min-h-screen px-6 py-20 relative overflow-hidden">
             <div className="max-w-6xl mx-auto relative z-10">
                 <motion.div
                     initial={{ opacity: 0, y: 30 }}
@@ -101,12 +79,6 @@ export default function ChapterTwo({ projects }: ChapterTwoProps) {
                     transition={{ duration: 0.8 }}
                     className="text-center mb-12 md:mb-24 px-4"
                 >
-                    <div className="flex justify-center mb-6">
-                        <AudioIcon
-                            text="Explore the builder phase. Here are the professional projects where I've applied engineering principles to solve real-world problems."
-                            salaarText="THE_BATTLE_GRID: Analyzing mission-critical deployments and computational warfare modules."
-                        />
-                    </div>
                     <h2 className={`text-3xl sm:text-4xl md:text-6xl font-bold mb-6 tracking-tight transition-colors duration-700 ${isSalaarMode ? 'text-white font-mono uppercase tracking-widest' : 'text-darkText'
                         }`}>
                         {isSalaarMode ? 'THE_BATTLE' : 'The Builder'} <span className={`${isSalaarMode ? 'text-red-600' : 'text-deepEmerald italic serif'}`}>{isSalaarMode ? '_GRID' : 'Phase'}</span>
@@ -179,10 +151,6 @@ export default function ChapterTwo({ projects }: ChapterTwoProps) {
                                                         }`}>
                                                         {isSalaarMode ? `// MISSION_${project.title.split(' ').join('_').toUpperCase()}` : project.title}
                                                     </h3>
-                                                    <AudioIcon
-                                                        text={`Quick summary of ${project.title}: ${project.description.slice(0, 100)}...`}
-                                                        salaarText={`MISSION_REPORT for ${project.title}: Tactical objectives met. Efficiency optimized.`}
-                                                    />
                                                 </div>
 
                                                 <div className={`flex flex-wrap gap-6 mb-8 py-4 border-y transition-colors duration-700 ${isSalaarMode ? 'border-red-900/30' : 'border-softGray/30'
