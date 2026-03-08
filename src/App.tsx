@@ -1,6 +1,6 @@
 import { ExperienceProvider } from './experience/ExperienceContext';
 import { SettingsProvider } from './context/SettingsContext';
-import PortfolioIntro from './experience/PortfolioIntro';
+import StoryExperience from './experience/StoryExperience';
 import FullPortfolio from './components/FullPortfolio';
 import { useExperience } from './experience/ExperienceContext';
 
@@ -29,7 +29,7 @@ function AppContent() {
   return (
     <>
       <FlashOverlay />
-      {isGuidedMode ? <PortfolioIntro /> : <FullPortfolio />}
+      {isGuidedMode ? <StoryExperience /> : <FullPortfolio />}
     </>
   );
 }

@@ -22,71 +22,6 @@ function ResponsiveCamera() {
 }
 
 // ─── ZEN HERO (F1 / BIKE STYLE) ───
-function ZenHero({ progress }: { progress: any }) {
-    const heroRef = useRef<THREE.Group>(null!);
-    const { size } = useThree();
-    const isMobile = size.width < 768;
-
-    useFrame((state) => {
-        if (!heroRef.current) return;
-        const p = progress.get();
-
-        // Path logic: Move across the screen horizontally based on scroll
-        // Mapping scroll 0-1 to X: narrower for mobile
-        const range = isMobile ? 12 : 30;
-        const targetX = (p - 0.5) * range;
-        heroRef.current.position.x = THREE.MathUtils.lerp(heroRef.current.position.x, targetX, 0.1);
-
-        // Vertical bobbing
-        heroRef.current.position.y = Math.sin(state.clock.elapsedTime * 2) * (isMobile ? 0.1 : 0.2);
-
-        // Banking: Tilt when moving fast (reacting to p change)
-        const tilt = Math.sin(p * Math.PI * 4) * 0.3;
-        heroRef.current.rotation.z = THREE.MathUtils.lerp(heroRef.current.rotation.z, -tilt, 0.1);
-        heroRef.current.rotation.y = Math.PI / 2 + tilt * 0.5;
-    });
-
-    return (
-        <group ref={heroRef} scale={isMobile ? 0.4 : 0.8}>
-            {/* Main Body */}
-            <mesh castShadow>
-                <boxGeometry args={[2, 0.4, 0.8]} />
-                <meshStandardMaterial color="#111" metalness={1} roughness={0.1} />
-            </mesh>
-            {/* Front Nose */}
-            <mesh position={[1.2, -0.1, 0]}>
-                <boxGeometry args={[0.5, 0.2, 0.4]} />
-                <meshStandardMaterial color="#111" />
-            </mesh>
-            {/* Side Pods */}
-            <mesh position={[0, -0.1, 0.5]}>
-                <boxGeometry args={[1, 0.3, 0.3]} />
-                <meshStandardMaterial color="#222" />
-            </mesh>
-            <mesh position={[0, -0.1, -0.5]}>
-                <boxGeometry args={[1, 0.3, 0.3]} />
-                <meshStandardMaterial color="#222" />
-            </mesh>
-            {/* Rear Wing */}
-            <group position={[-0.8, 0.3, 0]}>
-                <mesh>
-                    <boxGeometry args={[0.4, 0.6, 0.05]} />
-                    <meshStandardMaterial color="#333" />
-                </mesh>
-                <mesh position={[0, 0.3, 0]}>
-                    <boxGeometry args={[0.1, 0.05, 1.2]} />
-                    <meshStandardMaterial color="#00ffcc" emissive="#00ffcc" emissiveIntensity={2} />
-                </mesh>
-            </group>
-            {/* Engine Light */}
-            <mesh position={[-1, 0, 0]}>
-                <sphereGeometry args={[0.1, 16, 16]} />
-                <meshStandardMaterial color="#00ffcc" emissive="#00ffcc" emissiveIntensity={5} />
-            </mesh>
-            <pointLight position={[-1.2, 0, 0]} intensity={2} color="#00ffcc" distance={5} />
-        </group>
-    );
-}
 
 function Megastructure({ position, rotation, scale }: { position: [number, number, number]; rotation: [number, number, number]; scale: number }) {
     return (
@@ -137,15 +72,6 @@ function Scene3D({ isSalaar, progress }: { isSalaar: boolean; progress: any }) {
     }, [isSalaar]);
 
     // ─── ZEN CHARACTERS ───
-    const characters = useMemo(() => {
-        if (isSalaar) return [];
-        return [
-            { type: 'probe', pos: [-5, 4, -5], color: '#00ffcc', speed: 1.5 },
-            { type: 'node', pos: [6, -3, -8], color: '#3b82f6', speed: 2 },
-            { type: 'satellite', pos: [-8, -6, -4], color: '#93c5fd', speed: 2.5 },
-            { type: 'probe', pos: [9, 5, -6], color: '#00ffcc', speed: 1.8 }
-        ];
-    }, [isSalaar]);
 
     useFrame((state) => {
         if (!groupRef.current) return;
@@ -160,56 +86,11 @@ function Scene3D({ isSalaar, progress }: { isSalaar: boolean; progress: any }) {
 
     return (
         <group ref={groupRef}>
-            {!isSalaar && characters.map((c, i) => (
-                <Float key={`char-${i}`} speed={c.speed} rotationIntensity={1} floatIntensity={1}>
-                    <group position={c.pos as [number, number, number]}>
-                        {c.type === 'probe' && (
-                            <group>
-                                <mesh>
-                                    <sphereGeometry args={[0.3, 16, 16]} />
-                                    <meshStandardMaterial color={c.color} emissive={c.color} emissiveIntensity={0.5} />
-                                </mesh>
-                                <mesh rotation={[Math.PI / 2, 0, 0]}>
-                                    <torusGeometry args={[0.5, 0.02, 16, 100]} />
-                                    <meshStandardMaterial color={c.color} transparent opacity={0.3} />
-                                </mesh>
-                                <mesh position={[0, -0.4, 0]}>
-                                    <cylinderGeometry args={[0.01, 0.01, 0.8]} />
-                                    <meshStandardMaterial color="#333" />
-                                </mesh>
-                            </group>
-                        )}
-                        {c.type === 'node' && (
-                            <mesh>
-                                <boxGeometry args={[0.6, 0.6, 0.6]} />
-                                <meshStandardMaterial color={c.color} wireframe />
-                            </mesh>
-                        )}
-                        {c.type === 'satellite' && (
-                            <group rotation={[Math.PI / 3, 0.4, 0]}>
-                                <mesh>
-                                    <boxGeometry args={[0.4, 0.4, 0.1]} />
-                                    <meshStandardMaterial color="#222" metalness={1} />
-                                </mesh>
-                                <mesh position={[0.5, 0, 0]}>
-                                    <planeGeometry args={[0.6, 0.3]} />
-                                    <meshStandardMaterial color="#1e3a8a" transparent opacity={0.8} />
-                                </mesh>
-                                <mesh position={[-0.5, 0, 0]}>
-                                    <planeGeometry args={[0.6, 0.3]} />
-                                    <meshStandardMaterial color="#1e3a8a" transparent opacity={0.8} />
-                                </mesh>
-                            </group>
-                        )}
-                    </group>
-                </Float>
-            ))}
-
             {structures.map((s, i) => (
                 <Megastructure key={`struct-${i}`} position={s.pos as [number, number, number]} rotation={s.rot as [number, number, number]} scale={s.scale} />
             ))}
 
-            {!isSalaar && <ZenHero progress={progress} />}
+            {/* Moving characters and ZenHero removed as requested to clear main page clutter */}
 
             {nodes.map((node, i) => (
                 <Float key={i} speed={1} rotationIntensity={0.5} floatIntensity={0.5}>

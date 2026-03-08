@@ -1,6 +1,9 @@
 import { motion, useScroll, useTransform, useSpring } from 'framer-motion';
 import { useSettings } from '../../context/SettingsContext';
 import { useRef } from 'react';
+import { Canvas } from '@react-three/fiber';
+import { Environment, Float } from '@react-three/drei';
+import StoryPerson from '../../experience/StoryPerson';
 
 interface ChapterOneProps {
     name: string;
@@ -68,16 +71,31 @@ export default function ChapterOne({ name, tagline, introduction }: ChapterOnePr
                     </motion.div>
 
                     {/* Main Headline (Name) */}
-                    <div className="space-y-4 md:space-y-6">
-                        <motion.h1
-                            initial={{ opacity: 0, y: -50, scale: 1.1, filter: 'blur(20px)' }}
-                            animate={{ opacity: 1, y: 0, scale: 1, filter: 'blur(0px)' }}
-                            transition={{ duration: 1.2, ease: PREMIUM_EASE, delay: 0.1 }}
-                            className={`text-6xl sm:text-8xl md:text-[10rem] font-black tracking-tighter leading-[0.8] transition-colors duration-700 ${isSalaarMode ? 'text-white italic' : 'text-darkText'}`}
-                            style={isSalaarMode ? { textShadow: '0 0 30px rgba(139,0,0,0.4)' } : {}}
-                        >
-                            {isSalaarMode ? name.toUpperCase() : name}
-                        </motion.h1>
+                    <div className="space-y-4 md:space-y-6 flex flex-col items-center">
+                        <div className="relative inline-block">
+                            <motion.h1
+                                initial={{ opacity: 0, y: -50, scale: 1.1, filter: 'blur(20px)' }}
+                                animate={{ opacity: 1, y: 0, scale: 1, filter: 'blur(0px)' }}
+                                transition={{ duration: 1.2, ease: PREMIUM_EASE, delay: 0.1 }}
+                                className={`text-6xl sm:text-8xl md:text-[10rem] font-black tracking-tighter leading-[0.8] transition-colors duration-700 ${isSalaarMode ? 'text-white italic' : 'text-darkText'}`}
+                                style={isSalaarMode ? { textShadow: '0 0 30px rgba(139,0,0,0.4)' } : {}}
+                            >
+                                {isSalaarMode ? name.toUpperCase() : name}
+                            </motion.h1>
+
+                            {/* Floating Character next to Name (Main Page Integration) */}
+                            {!isSalaarMode && (
+                                <div className="absolute -right-20 -top-10 w-32 h-32 hidden md:block">
+                                    <Canvas camera={{ position: [0, 0, 5], fov: 35 }}>
+                                        <Environment preset="night" />
+                                        <ambientLight intensity={0.5} />
+                                        <Float speed={3} rotationIntensity={0.6} floatIntensity={0.6}>
+                                            <StoryPerson position={[0, -1, 0]} rotationY={-Math.PI / 4} />
+                                        </Float>
+                                    </Canvas>
+                                </div>
+                            )}
+                        </div>
 
                         {/* White mode animated underline */}
                         {!isSalaarMode && (

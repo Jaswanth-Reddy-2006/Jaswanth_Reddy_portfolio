@@ -20,6 +20,7 @@ import SalaarScrollScene from './salaar/SalaarScrollScene';
 import { useSettings } from '../context/SettingsContext';
 import { useState, useEffect } from 'react';
 import InterviewMode from './InterviewMode';
+import RoadmapHUD from './RoadmapHUD';
 
 const PREMIUM_EASE = [0.22, 1, 0.36, 1] as const;
 
@@ -70,6 +71,7 @@ export default function FullPortfolio() {
             <PortfolioHUD />
             <SalaarHUD />
             <ScrollProgressIndicator />
+            <RoadmapHUD />
 
             <main className="relative z-10 max-w-6xl mx-auto px-6 py-20 space-y-40">
                 {/* Chapter 1: Introduction — hero parallax handled inside */}
