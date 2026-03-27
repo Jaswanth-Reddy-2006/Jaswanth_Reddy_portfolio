@@ -1,17 +1,14 @@
 import { motion, AnimatePresence } from 'framer-motion';
-import { ArrowRight, ArrowLeft, Crosshair } from 'lucide-react';
+import { ArrowRight, ArrowLeft } from 'lucide-react';
 import { useState } from 'react';
-import { useSettings } from '../../context/SettingsContext';
 import type { Project } from '../../data/portfolio';
 import { HighlightGroup, HighlightItem } from '../SmartHighlight';
-import BattleGrid from '../salaar/BattleGrid';
 
 interface ChapterTwoProps {
     projects: Project[];
 }
 
 export default function ChapterTwo({ projects }: ChapterTwoProps) {
-    const { isSalaarMode } = useSettings();
     const [focusedId, setFocusedId] = useState<string | null>(null);
     const [caseStudyId, setCaseStudyId] = useState<string | null>(null);
 
@@ -31,11 +28,11 @@ export default function ChapterTwo({ projects }: ChapterTwoProps) {
 
     if (caseStudyId && activeProject) {
         return (
-            <section className="min-n-screen px-6 py-20 relative z-10">
+            <section className="min-h-screen px-6 py-20 relative z-10">
                 <div className="max-w-4xl mx-auto relative z-10">
                     <button
                         onClick={closeCaseStudy}
-                        className={`flex items-center gap-2 transition-colors mb-12 group ${isSalaarMode ? 'text-red-500' : 'text-mutedBlue'}`}
+                        className="flex items-center gap-2 transition-colors mb-12 group text-mutedBlue"
                     >
                         <ArrowLeft size={20} className="group-hover:-translate-x-1 transition-transform" />
                         <span>Back to Timeline</span>
@@ -43,24 +40,24 @@ export default function ChapterTwo({ projects }: ChapterTwoProps) {
 
                     <div className="mb-16">
                         <div className="flex items-center gap-3 mb-4">
-                            <span className={`px-3 py-1 text-xs font-bold rounded-full uppercase tracking-widest ${isSalaarMode ? 'bg-red-900/20 text-red-500 border border-red-900/40' : 'bg-deepEmerald/10 text-deepEmerald'}`}>
+                            <span className="px-3 py-1 text-xs font-bold rounded-full uppercase tracking-widest bg-deepEmerald/10 text-deepEmerald">
                                 {activeProject.impactBadge}
                             </span>
-                            <span className={`${isSalaarMode ? 'text-red-500/60 font-mono' : 'text-lightText'} text-sm`}>{activeProject.year}</span>
+                            <span className="text-lightText text-sm">{activeProject.year}</span>
                         </div>
-                        <h2 className={`text-5xl font-bold mb-8 ${isSalaarMode ? 'text-white font-mono' : 'text-darkText'}`}>{activeProject.title}</h2>
-                        <p className={`text-2xl font-light leading-relaxed ${isSalaarMode ? 'text-white/60 font-mono' : 'text-lightText'}`}>{activeProject.description}</p>
+                        <h2 className="text-5xl font-bold mb-8 text-darkText">{activeProject.title}</h2>
+                        <p className="text-2xl font-light leading-relaxed text-lightText">{activeProject.description}</p>
                     </div>
 
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-12 mb-20">
                         <div className="space-y-8">
                             <div>
-                                <h4 className={`text-sm font-bold uppercase tracking-widest mb-4 ${isSalaarMode ? 'text-red-600' : 'text-mutedBlue'}`}>The Problem</h4>
-                                <p className={`${isSalaarMode ? 'text-white/40 font-mono' : 'text-darkText/80'} leading-relaxed`}>{activeProject.problem}</p>
+                                <h4 className="text-sm font-bold uppercase tracking-widest mb-4 text-mutedBlue">The Problem</h4>
+                                <p className="text-darkText/80 leading-relaxed">{activeProject.problem}</p>
                             </div>
                             <div>
-                                <h4 className={`text-sm font-bold uppercase tracking-widest mb-4 ${isSalaarMode ? 'text-red-600' : 'text-mutedBlue'}`}>The Outcome</h4>
-                                <p className={`${isSalaarMode ? 'text-white/40 font-mono' : 'text-darkText/80'} leading-relaxed`}>{activeProject.outcome}</p>
+                                <h4 className="text-sm font-bold uppercase tracking-widest mb-4 text-mutedBlue">The Outcome</h4>
+                                <p className="text-darkText/80 leading-relaxed">{activeProject.outcome}</p>
                             </div>
                         </div>
                     </div>
@@ -70,7 +67,7 @@ export default function ChapterTwo({ projects }: ChapterTwoProps) {
     }
 
     return (
-        <section id="chapter-2" className="min-h-screen px-6 py-20 relative overflow-hidden">
+        <section id="chapter-2" className="min-h-screen px-6 pt-32 pb-20 relative overflow-hidden">
             <div className="max-w-6xl mx-auto relative z-10">
                 <motion.div
                     initial={{ opacity: 0, y: 30 }}
@@ -79,21 +76,16 @@ export default function ChapterTwo({ projects }: ChapterTwoProps) {
                     transition={{ duration: 0.8 }}
                     className="text-center mb-12 md:mb-24 px-4"
                 >
-                    <h2 className={`text-3xl sm:text-4xl md:text-6xl font-bold mb-6 tracking-tight transition-colors duration-700 ${isSalaarMode ? 'text-white font-mono uppercase tracking-widest' : 'text-darkText'
-                        }`}>
-                        {isSalaarMode ? 'THE_BATTLE' : 'The Builder'} <span className={`${isSalaarMode ? 'text-red-600' : 'text-deepEmerald italic serif'}`}>{isSalaarMode ? '_GRID' : 'Phase'}</span>
+                    <h2 className="text-3xl sm:text-4xl md:text-6xl font-bold mb-6 tracking-tight transition-colors duration-700 text-darkText">
+                        The Builder <span className="text-deepEmerald italic serif">Phase</span>
                     </h2>
-                    <p className={`text-base sm:text-lg md:text-xl max-w-2xl mx-auto leading-relaxed transition-colors duration-700 ${isSalaarMode ? 'text-white/40 font-mono' : 'text-lightText/60'
-                        }`}>
-                        {isSalaarMode
-                            ? '[BATTLE_CORE]: MISSION_OBJECTIVES_ACTIVE. Strategic deployments established.'
-                            : 'Architecting digital solutions with technical precision and creative intent.'}
+                    <p className="text-base sm:text-lg md:text-xl max-w-2xl mx-auto leading-relaxed transition-colors duration-700 text-lightText/60">
+                        Architecting digital solutions with technical precision and creative intent.
                     </p>
                 </motion.div>
 
                 <div className="relative">
-                    {/* Timeline line - hidden on small screens */}
-                    <div className={`hidden lg:block absolute left-1/2 top-0 bottom-0 w-[1px] ${isSalaarMode ? 'bg-gradient-to-b from-transparent via-red-900/40 to-transparent' : 'bg-gradient-to-b from-transparent via-mutedBlue/20 to-transparent'}`} />
+                    <div className="hidden lg:block absolute left-1/2 top-0 bottom-0 w-[1px] bg-gradient-to-b from-transparent via-mutedBlue/20 to-transparent" />
 
                     <HighlightGroup className="space-y-12 md:space-y-32">
                         {projects.map((project, index) => {
@@ -113,27 +105,15 @@ export default function ChapterTwo({ projects }: ChapterTwoProps) {
                                     }}
                                     className={`relative flex flex-col lg:flex-row items-center gap-8 ${index % 2 === 0 ? 'lg:flex-row-reverse' : ''} ${isFocused ? 'z-50' : 'z-10'}`}
                                 >
-                                    {/* Timeline dot */}
-                                    <div className={`hidden lg:block absolute left-1/2 top-1/2 w-3 h-3 rounded-full border border-warmWhite transform -translate-x-1/2 -translate-y-1/2 transition-all duration-500 ${isFocused ? (isSalaarMode ? 'bg-red-700 scale-[2.5] shadow-[0_0_15px_rgba(153,0,0,0.5)]' : 'bg-deepEmerald scale-[2.5] shadow-[0_0_15px_rgba(45,95,79,0.5)]') : (isSalaarMode ? 'bg-red-900/40 hover:scale-150' : 'bg-mutedBlue/30 hover:scale-150')}`} />
+                                    <div className={`hidden lg:block absolute left-1/2 top-1/2 w-3 h-3 rounded-full border border-warmWhite transform -translate-x-1/2 -translate-y-1/2 transition-all duration-500 ${isFocused ? 'bg-deepEmerald scale-[2.5] shadow-[0_0_15px_rgba(45,95,79,0.5)]' : 'bg-mutedBlue/30 hover:scale-150'}`} />
 
                                     <div className="w-full lg:w-[calc(50%-3rem)] relative group">
-                                        {isSalaarMode && (
-                                            <div className="absolute -inset-[1px] bg-gradient-to-r from-red-900/50 to-transparent rounded-[2rem] opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
-                                        )}
                                         <HighlightItem
                                             id={project.id}
-                                            className={`rounded-[2rem] p-6 sm:p-8 md:p-10 border relative h-full transition-all duration-500 overflow-hidden ${isSalaarMode
-                                                ? `bg-black/90 backdrop-blur-xl border-red-900/30 ${isFocused ? 'shadow-[0_0_30px_rgba(153,0,0,0.2)] border-red-800/50' : 'hover:border-red-900/50'}`
-                                                : `bg-white/80 backdrop-blur-md border-softGray/50 ${isFocused ? 'shadow-2xl border-mutedBlue/30' : 'shadow-soft-lg hover:border-mutedBlue/20'}`
+                                            className={`rounded-[2rem] p-6 sm:p-8 md:p-10 border relative h-full transition-all duration-500 overflow-hidden ${isFocused ? 'bg-white shadow-2xl border-mutedBlue/30' : 'bg-white/80 backdrop-blur-md border-softGray/50 shadow-soft-lg hover:border-mutedBlue/20'
                                                 } cursor-pointer`}
                                             onClick={() => handleCardClick(project.id)}
                                         >
-                                            {isSalaarMode && <BattleGrid isCard opacity={0.6} intensity="high" />}
-                                            {isSalaarMode && (
-                                                <div className="absolute top-0 right-0 p-4 opacity-10 group-hover:opacity-30 transition-opacity z-10">
-                                                    <Crosshair size={40} className="text-red-700" />
-                                                </div>
-                                            )}
                                             <div className="flex flex-col h-full relative z-10">
                                                 <div className="flex items-center justify-between mb-6">
                                                     <div className="flex items-center gap-3">
@@ -147,20 +127,16 @@ export default function ChapterTwo({ projects }: ChapterTwoProps) {
                                                 </div>
 
                                                 <div className="flex items-center gap-4 mb-4">
-                                                    <h3 className={`text-2xl sm:text-3xl font-bold transition-colors duration-500 ${isSalaarMode ? 'text-white' : 'text-darkText group-hover:text-mutedBlue'
-                                                        }`}>
-                                                        {isSalaarMode ? `// MISSION_${project.title.split(' ').join('_').toUpperCase()}` : project.title}
+                                                    <h3 className="text-2xl sm:text-3xl font-bold transition-colors duration-500 text-darkText group-hover:text-mutedBlue">
+                                                        {project.title}
                                                     </h3>
                                                 </div>
 
-                                                <div className={`flex flex-wrap gap-6 mb-8 py-4 border-y transition-colors duration-700 ${isSalaarMode ? 'border-red-900/30' : 'border-softGray/30'
-                                                    }`}>
+                                                <div className="flex flex-wrap gap-6 mb-8 py-4 border-y border-softGray/30 transition-colors duration-700">
                                                     {project.metrics?.map(m => (
                                                         <div key={m.label} className="min-w-[80px]">
-                                                            <div className={`text-[9px] font-bold uppercase tracking-tighter mb-1 transition-colors duration-700 ${isSalaarMode ? 'text-red-600' : 'text-mutedBlue/50'
-                                                                }`}>{m.label}</div>
-                                                            <div className={`text-lg font-bold font-mono leading-none transition-colors duration-700 ${isSalaarMode ? 'text-white' : 'text-darkText'
-                                                                }`}>{m.value}</div>
+                                                            <div className="text-[9px] font-bold uppercase tracking-tighter mb-1 text-mutedBlue/50 transition-colors duration-700">{m.label}</div>
+                                                            <div className="text-lg font-bold font-mono leading-none text-darkText transition-colors duration-700">{m.value}</div>
                                                         </div>
                                                     ))}
                                                 </div>
@@ -216,12 +192,9 @@ export default function ChapterTwo({ projects }: ChapterTwoProps) {
                                                             e.stopPropagation();
                                                             toggleCaseStudy(project.id);
                                                         }}
-                                                        className={`h-10 px-4 rounded-xl text-xs font-bold transition-all duration-300 flex items-center gap-2 group/cta shadow-lg ${isSalaarMode
-                                                            ? 'bg-red-700 text-white hover:bg-white hover:text-red-700'
-                                                            : 'bg-darkText text-white hover:bg-mutedBlue shadow-darkText/10'
-                                                            }`}
+                                                        className="h-10 px-4 rounded-xl text-xs font-bold transition-all duration-300 flex items-center gap-2 group/cta shadow-lg bg-darkText text-white hover:bg-mutedBlue shadow-darkText/10"
                                                     >
-                                                        {isSalaarMode ? 'Initialize Intel' : 'Details'}
+                                                        Details
                                                         <ArrowRight size={14} className="group-hover/cta:translate-x-1 transition-transform" />
                                                     </button>
                                                 </div>
@@ -229,7 +202,6 @@ export default function ChapterTwo({ projects }: ChapterTwoProps) {
                                         </HighlightItem>
                                     </div>
 
-                                    {/* Decorative Spacer Card (Desktop only) */}
                                     <div className="hidden lg:block w-[calc(50%-3rem)] px-12">
                                         <div className="opacity-10 font-mono text-[10px] space-y-2 pointer-events-none">
                                             <div className="flex gap-4">

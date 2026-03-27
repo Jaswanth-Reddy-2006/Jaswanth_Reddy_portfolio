@@ -1,53 +1,105 @@
 export const scenes = [
     {
-        headline: "I don't just build features.",
-        subtext: "I build systems that solve meaningful problems.",
+        headline: "I am Jaswanth Reddy.",
+        subtext: "A Full-Stack Developer & System Architect.",
         insights: [
-            "Always ask 'Why?' before 'How?'",
-            "Consider the system as a whole, not just isolated parts.",
-            "Optimize for maintainability and scalability from day one."
+            "Passionate about clean code.",
+            "Focused on system architecture.",
+            "Building the future of web tech."
         ]
     },
     {
-        headline: "I think in flows, not fragments.",
-        subtext: "Frontend. Backend. Data. Architecture.",
+        headline: "The Builder Phase.",
+        subtext: "Crafting scalable systems from the ground up.",
         insights: [
-            "Data should flow predictably.",
-            "State management is the backbone of UX.",
-            "Edge cases are not optional; they are the system."
+            "React & Next.js mastery.",
+            "Node.js & Go backends.",
+            "Full-stack engineering excellence."
         ]
     },
     {
-        headline: "Decisions define engineering.",
-        subtext: "Every tool has tradeoffs. I choose deliberately.",
+        headline: "Real World Experience.",
+        subtext: "Delivering value through internships and industry projects.",
         insights: [
-            "No silver bullets, only tradeoffs.",
-            "Choose boring technology for critical paths.",
-            "Innovate where it adds unique value."
+            "Internship at top tech labs.",
+            "Building production-ready apps.",
+            "Collaborative agile development."
         ]
     },
     {
-        headline: "Shipping > Talking.",
-        subtext: "I build. I iterate. I improve.",
+        headline: "The Tech Arena.",
+        subtext: "My technical arsenal for solving complex problems.",
         insights: [
-            "Perfect is the enemy of done.",
-            "Feedback loops accelerate quality.",
-            "Deploy early, observe often."
-        ]
-    },
-    {
-        headline: "Still evolving.",
-        subtext: "The best systems are never static.",
-        insights: [
-            "Learning is a continuous loop.",
-            "Refactoring is an investment, not a cost.",
-            "Stay curious, stay humble."
+            "Distributed Systems.",
+            "Cloud Infrastructure.",
+            "Performance Engineering."
         ]
     }
 ];
 
-export const SLIDE_X = [0, 15, 30, 45, 60];
-export const themes = ["#00ffcc", "#3b82f6", "#fde047", "#f97316", "#ffffff"];
-export const SHIP_Y = 1;
-export const CAM_Z = 8;
-export const TRAVEL_DURATION = 1.5;
+export const pathPoints = [
+    { position: [0, 0, 0], rotation: 0 },
+    { position: [15, 0, 0], rotation: 0 },
+    { position: [30, 0, 0], rotation: 0 },
+    { position: [45, 0, 0], rotation: 0 }
+];
+
+export const SLIDE_X = [0, 30, 60, 90];
+export const SHIP_Y = 0;
+export const themes = ["#00ffcc", "#3b82f6", "#ffffff", "#f97316"];
+export const CAM_Z = 12;
+export const TRAVEL_DURATION = 3.0; // Slower for walking
+
+// Path points for the Map journey in FullPortfolio
+export const MAP_NODES = [
+    { id: 'chapter-1', title: 'Origin Phase', pos: [0, 0, 0], rot: Math.PI / 2, mapX: 10, mapY: 15 },
+    { id: 'chapter-2', title: 'Builder Phase', pos: [20, 1, -15], rot: Math.PI / 4, mapX: 40, mapY: 25 },
+    { id: 'chapter-experience', title: 'Real World', pos: [45, -1, -5], rot: Math.PI / 1.5, mapX: 70, mapY: 35 },
+    { id: 'chapter-3', title: 'Skills & Intel', pos: [70, 0, 10], rot: Math.PI / 2, mapX: 90, mapY: 50 },
+    { id: 'chapter-4', title: 'Education', pos: [90, 2, -20], rot: Math.PI / 6, mapX: 60, mapY: 65 },
+    { id: 'chapter-6', title: 'Certifications', pos: [115, -2, 5], rot: Math.PI / 1.2, mapX: 30, mapY: 75 },
+    { id: 'chapter-5', title: 'The Vision', pos: [135, 1, -10], rot: Math.PI / 3, mapX: 15, mapY: 90 },
+    { id: 'socials', title: 'Uplink Center', pos: [160, 0, 0], rot: Math.PI / 2, mapX: 90, mapY: 90 }
+];
+
+
+export const mindsets = [
+    {
+        id: "solver",
+        title: "Problem Solver",
+        description: "Turning complex constraints into elegant, creative solutions.",
+        icon: "Zap",
+        color: "#22d3ee"
+    },
+    {
+        id: "builder",
+        title: "Builder",
+        description: "Crafting scalable systems and robust architectures from scratch.",
+        icon: "Hammer",
+        color: "#a855f7"
+    },
+    {
+        id: "learner",
+        title: "Fast Learner",
+        description: "Rapidly mastering new technologies and paradigms.",
+        icon: "Rocket",
+        color: "#22d3ee"
+    },
+    {
+        id: "thinker",
+        title: "Systems Thinker",
+        description: "Understanding the intricate connections within the big picture.",
+        icon: "Cpu",
+        color: "#a855f7"
+    },
+    {
+        id: "innovator",
+        title: "Innovator",
+        description: "Pushing the boundaries of what is possible in tech.",
+        icon: "Lightbulb",
+        color: "#22d3ee"
+    }
+];
+
+export const NEON_BLUE = "#22d3ee";
+export const NEON_PURPLE = "#a855f7";
