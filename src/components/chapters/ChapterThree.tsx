@@ -1,5 +1,5 @@
 import { motion, AnimatePresence } from 'framer-motion';
-import { Code2, Server, Binary, Wrench, ArrowRight, ShieldCheck } from 'lucide-react';
+import { Code2, Server, Binary, Wrench, ArrowRight } from 'lucide-react';
 import type { SkillCategory } from '../../data/portfolio';
 import { useState } from 'react';
 
@@ -48,7 +48,7 @@ export default function ChapterThree({ skills }: ChapterThreeProps) {
     return (
         <section
             id="chapter-3"
-            className="min-h-screen px-4 md:px-6 py-16 md:py-24 relative overflow-hidden"
+            className="min-h-screen px-4 md:px-6 pb-20 relative overflow-hidden"
         >
             <div className="max-w-6xl mx-auto relative z-10">
                 <motion.div
@@ -145,43 +145,64 @@ export default function ChapterThree({ skills }: ChapterThreeProps) {
                             >
                                 <LightSweep trigger={sweepTrigger} />
 
+                                <div className="absolute top-0 left-0 w-full h-[2px] bg-gradient-to-r from-transparent via-mutedBlue/40 to-transparent pointer-events-none animate-scan-y" />
+
                                 <div className="space-y-6 md:space-y-8 relative z-10">
                                     <div className="flex items-center justify-between mb-2">
-                                        <h4 className="text-xs font-bold uppercase tracking-widest transition-colors duration-700 text-mutedBlue lg:hidden">
-                                            {`Active Core Module: ${expandedSkill}`}
+                                        <h4 className="text-[10px] font-bold uppercase tracking-[0.4em] transition-colors duration-700 text-mutedBlue/60">
+                                            {`Core Intelligence Module // ${expandedSkill}`}
                                         </h4>
+                                        <div className="flex gap-1">
+                                            {[1, 2, 3].map(i => (
+                                                <div key={i} className="w-1 h-1 rounded-full bg-mutedBlue/30 animate-pulse" style={{ animationDelay: `${i * 0.2}s` }} />
+                                            ))}
+                                        </div>
                                     </div>
-                                    <div className="flex flex-wrap gap-2 md:gap-4">
+                                    <div className="flex flex-wrap gap-3 md:gap-5">
                                         {skills.find(s => s.category === expandedSkill)?.skills.map((skill, i) => (
                                             <motion.div
                                                 key={skill}
-                                                initial={{ scale: 0.7, opacity: 0, filter: 'blur(8px)' }}
+                                                initial={{ scale: 0.8, opacity: 0, filter: 'blur(10px)' }}
                                                 animate={{ scale: 1, opacity: 1, filter: 'blur(0px)' }}
+                                                whileHover={{ scale: 1.05, y: -2 }}
                                                 transition={{
-                                                    duration: 0.5,
-                                                    delay: i * 0.07,
+                                                    duration: 0.6,
+                                                    delay: i * 0.05,
                                                     ease: PREMIUM_EASE,
                                                 }}
-                                                className="px-4 py-2 md:px-6 md:py-3 transition-all duration-500 group/skill relative overflow-hidden flex items-center gap-2 border bg-white text-darkText border-softGray hover:border-mutedBlue/30 shadow-sm rounded-xl animate-float-skill"
-                                                style={{ animationDelay: `${i * 0.3}s` }}
+                                                className="px-5 py-3 md:px-8 md:py-4 transition-all duration-500 group/skill relative overflow-hidden flex items-center gap-3 border bg-white/80 backdrop-blur-sm text-darkText border-softGray hover:border-mutedBlue/40 shadow-sm hover:shadow-lg rounded-2xl"
                                             >
-                                                <ShieldCheck size={12} className="text-deepEmerald/60" />
-                                                <span className="text-sm sm:text-base md:text-lg font-medium">{skill}</span>
+                                                <div className="w-2 h-2 rounded-full bg-deepEmerald/40 group-hover/skill:bg-deepEmerald group-hover/skill:scale-125 transition-all duration-300 shadow-[0_0_10px_rgba(16,185,129,0)] group-hover/skill:shadow-[0_0_10px_rgba(16,185,129,0.5)]" />
+                                                <span className="text-sm sm:text-base md:text-lg font-bold tracking-tight">{skill}</span>
 
                                                 <motion.div
                                                     initial={{ x: '-100%' }}
                                                     animate={{ x: '100%' }}
                                                     transition={{
-                                                        duration: 2,
+                                                        duration: 3,
                                                         repeat: Infinity,
-                                                        delay: i * 0.2,
+                                                        delay: i * 0.3,
                                                         ease: "linear"
                                                     }}
-                                                    className="absolute inset-0 w-1/2 h-full opacity-20 pointer-events-none bg-gradient-to-r from-transparent via-mutedBlue/30 to-transparent"
-                                                    style={{ skewX: '-20deg' }}
+                                                    className="absolute inset-0 w-1/3 h-full opacity-10 pointer-events-none bg-gradient-to-r from-transparent via-mutedBlue to-transparent"
+                                                    style={{ skewX: '-25deg' }}
                                                 />
+                                                
+                                                <div className="absolute bottom-0 left-0 h-[1px] bg-mutedBlue/20 w-0 group-hover/skill:w-full transition-all duration-700" />
                                             </motion.div>
                                         ))}
+                                    </div>
+                                    
+                                    <div className="mt-12 opacity-20 pointer-events-none">
+                                        <div className="grid grid-cols-12 gap-1 h-1">
+                                            {Array.from({ length: 48 }).map((_, i) => (
+                                                <div key={i} className={`h-full ${i % 4 === 0 ? 'bg-mutedBlue' : 'bg-softGray/30'}`} />
+                                            ))}
+                                        </div>
+                                        <div className="flex justify-between text-[6px] font-mono mt-2 uppercase tracking-[0.5em]">
+                                            <span>Buffer_Load_0x{expandedSkill?.length}</span>
+                                            <span>Intel_Verified</span>
+                                        </div>
                                     </div>
                                 </div>
                             </motion.div>

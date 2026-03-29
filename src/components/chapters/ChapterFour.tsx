@@ -65,7 +65,7 @@ function CredentialCard({ cert, index }: { cert: Certification; index: number })
 
 export default function ChapterFour({ education }: ChapterFourProps) {
     return (
-        <section id="chapter-4" className="min-h-screen px-6 py-20 relative overflow-hidden">
+        <section id="chapter-4" className="min-h-screen px-6 pb-20 relative overflow-hidden">
             <div className="max-w-6xl mx-auto">
                 <motion.div
                     initial={{ opacity: 0, y: 60, scale: 0.98, filter: 'blur(10px)' }}

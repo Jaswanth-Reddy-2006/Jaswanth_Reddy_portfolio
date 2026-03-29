@@ -38,7 +38,7 @@ export default function ChapterOne({ name, tagline, introduction }: ChapterOnePr
         <section
             ref={sectionRef}
             id="chapter-1"
-            className="min-h-screen flex items-center justify-center px-6 py-20 relative overflow-hidden"
+            className="min-h-screen flex items-center justify-center px-6 pb-20 relative overflow-hidden"
             style={{ perspective: '1200px' }}
         >
             {/* ── SALAAR ENGINE 3D LAYERS ── */}

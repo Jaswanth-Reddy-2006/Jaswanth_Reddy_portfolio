@@ -4,6 +4,7 @@ interface ExperienceContextType {
     isGuidedMode: boolean;
     isRevealing: boolean;
     completeExperience: () => void;
+    setIsGuidedMode: (val: boolean) => void;
 }
 
 const ExperienceContext = createContext<ExperienceContextType | undefined>(undefined);
@@ -18,7 +19,7 @@ export function ExperienceProvider({ children }: { children: ReactNode }) {
     };
 
     return (
-        <ExperienceContext.Provider value={{ isGuidedMode, isRevealing, completeExperience }}>
+        <ExperienceContext.Provider value={{ isGuidedMode, isRevealing, completeExperience, setIsGuidedMode }}>
             {children}
         </ExperienceContext.Provider>
     );

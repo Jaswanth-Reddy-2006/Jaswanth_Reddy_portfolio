@@ -52,7 +52,7 @@ export default function StoryPerson({ position, rotationY = 0, isWalking = false
             {/* Torso / Shirt */}
             <mesh position={[0, 0.45, 0]} castShadow>
                 <capsuleGeometry args={[0.18, 0.35, 8, 16]} />
-                <meshStandardMaterial color="#3b82f6" roughness={0.7} /> {/* Blue shirt */}
+                <meshStandardMaterial color="#3b82f6" roughness={0.7} emissive="#3b82f6" emissiveIntensity={0.2} /> {/* Blue shirt */}
             </mesh>
 
             {/* Neck */}
@@ -66,7 +66,7 @@ export default function StoryPerson({ position, rotationY = 0, isWalking = false
                 {/* Face */}
                 <mesh castShadow>
                     <sphereGeometry args={[0.15, 32, 32]} />
-                    <meshStandardMaterial color="#fcd34d" /> {/* Skin tone */}
+                    <meshStandardMaterial color="#fcd34d" emissive="#fcd34d" emissiveIntensity={0.1} /> {/* Skin tone */}
                 </mesh>
 
                 {/* Hair */}
@@ -85,11 +85,11 @@ export default function StoryPerson({ position, rotationY = 0, isWalking = false
                 {/* Eyes */}
                 <mesh position={[0.06, 0.02, 0.12]}>
                     <sphereGeometry args={[0.02, 8, 8]} />
-                    <meshStandardMaterial color="#000" />
+                    <meshStandardMaterial color="#000" emissive="#22d3ee" emissiveIntensity={2} />
                 </mesh>
                 <mesh position={[-0.06, 0.02, 0.12]}>
                     <sphereGeometry args={[0.02, 8, 8]} />
-                    <meshStandardMaterial color="#000" />
+                    <meshStandardMaterial color="#000" emissive="#22d3ee" emissiveIntensity={2} />
                 </mesh>
 
                 {/* Blush */}

@@ -68,6 +68,11 @@ export const mindsets = [
         id: "solver",
         title: "Problem Solver",
         description: "Turning complex constraints into elegant, creative solutions.",
+        insights: [
+            "Deconstructing complex technical challenges into manageable architectural modules.",
+            "Applying rigorous logic to ensure system stability and performance efficiency.",
+            "Crafting innovative solutions that balance technical depth with user experience."
+        ],
         icon: "Zap",
         color: "#22d3ee"
     },
@@ -75,6 +80,11 @@ export const mindsets = [
         id: "builder",
         title: "Builder",
         description: "Crafting scalable systems and robust architectures from scratch.",
+        insights: [
+            "Architecting high-concurrency systems using modern distributed patterns.",
+            "Ensuring long-term scalability through modular and maintainable codebases.",
+            "Establishing rock-solid reliability in mission-critical backend environments."
+        ],
         icon: "Hammer",
         color: "#a855f7"
     },
@@ -82,6 +92,11 @@ export const mindsets = [
         id: "learner",
         title: "Fast Learner",
         description: "Rapidly mastering new technologies and paradigms.",
+        insights: [
+            "Adapting to evolving tech stacks with a focus on core engineering principles.",
+            "Mastering complex modern frameworks through deep internal technical research.",
+            "Consistently growing expertise to stay at the cutting edge of software development."
+        ],
         icon: "Rocket",
         color: "#22d3ee"
     },
@@ -89,6 +104,11 @@ export const mindsets = [
         id: "thinker",
         title: "Systems Thinker",
         description: "Understanding the intricate connections within the big picture.",
+        insights: [
+            "Visualizing the holistic impact of individual components on the entire system.",
+            "Identifying and resolving bottlenecks across multiple interconnected services.",
+            "Analyzing deep architectural relationships to prevent future system regression."
+        ],
         icon: "Cpu",
         color: "#a855f7"
     },
@@ -96,6 +116,11 @@ export const mindsets = [
         id: "innovator",
         title: "Innovator",
         description: "Pushing the boundaries of what is possible in tech.",
+        insights: [
+            "Envisioning future-proof technologies that solve tomorrow's digital problems.",
+            "Thinking outside conventional patterns to deliver transformative user value.",
+            "Pioneering novel engineering strategies to overcome traditional tech limitations."
+        ],
         icon: "Lightbulb",
         color: "#22d3ee"
     }
@@ -103,3 +128,5 @@ export const mindsets = [
 
 export const NEON_BLUE = "#22d3ee";
 export const NEON_PURPLE = "#a855f7";
+
+export const MINDSET_EXPERIENCES = mindsets;

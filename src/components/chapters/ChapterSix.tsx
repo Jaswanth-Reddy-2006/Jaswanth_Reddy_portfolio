@@ -11,7 +11,7 @@ export default function ChapterSix({ certifications }: ChapterSixProps) {
     const [selectedCert, setSelectedCert] = useState<Certification | null>(null);
 
     return (
-        <section id="chapter-6" className="py-20 px-6 max-w-7xl mx-auto relative overflow-hidden">
+        <section id="chapter-6" className="pb-12 px-6 max-w-7xl mx-auto relative overflow-hidden">
             <div className="relative z-10">
                 <motion.div
                     initial={{ opacity: 0, y: 20 }}

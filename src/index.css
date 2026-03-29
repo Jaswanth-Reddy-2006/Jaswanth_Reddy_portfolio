@@ -138,6 +138,15 @@
   }
 }
 
+@keyframes gridHorizon {
+  0% {
+    transform: perspective(500px) rotateX(60deg) translateY(0px);
+  }
+  100% {
+    transform: perspective(500px) rotateX(60deg) translateY(50px);
+  }
+}
+
 /* ─── Cinematic Utility Classes ─── */
 @layer utilities {
   .text-balance {
@@ -175,6 +184,19 @@
 
   .animate-red-glow {
     animation: redGlowPulse 2s ease-in-out infinite;
+  }
+
+  .animate-scan-y {
+    animation: scanLineH 4s linear infinite;
+  }
+
+  .grid-horizon {
+    background-image: 
+      linear-gradient(to right, rgba(107, 140, 186, 0.1) 1px, transparent 1px),
+      linear-gradient(to bottom, rgba(107, 140, 186, 0.1) 1px, transparent 1px);
+    background-size: 50px 50px;
+    mask-image: linear-gradient(to bottom, transparent, black, transparent);
+    animation: gridHorizon 3s linear infinite;
   }
 
   .grainy-overlay {

@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { motion, AnimatePresence, animate } from 'framer-motion';
 import { useMapNavigation } from '../context/MapContext';
 import { MAP_NODES } from '../experience/IntroConstants';
@@ -22,7 +22,122 @@ const getBezierPoint = (t: number, p0: any, p1: any, p2: any, p3: any) => {
     return { x, y };
 };
 
-const MapCharacter = ({ startNodeId, targetNodeId, onReachTarget }: { startNodeId: string, targetNodeId: string | null, onReachTarget: () => void }) => {
+// ─── Typing Speech Bubble ───────────────────────────────────────────────────
+const GREETING_SEGMENTS = [
+    { text: "Hey there! I'm ", bold: false },
+    { text: "Jaswanth", bold: true },
+    { text: " — let me walk you through the", bold: false },
+    { text: " complete map of my journey.", bold: true },
+    { text: " Click any node to explore!", bold: false },
+];
+
+const FULL_TEXT = GREETING_SEGMENTS.map(s => s.text).join('');
+
+function TypingBubble({ show, posX, posY }: { show: boolean; posX: number; posY: number }) {
+    const [displayed, setDisplayed] = useState('');
+    const [done, setDone] = useState(false);
+    const timeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+
+    useEffect(() => {
+        if (!show) {
+            setDisplayed('');
+            setDone(false);
+            return;
+        }
+        const startDelay = setTimeout(() => {
+            let i = 0;
+            const type = () => {
+                if (i <= FULL_TEXT.length) {
+                    setDisplayed(FULL_TEXT.slice(0, i));
+                    i++;
+                    timeoutRef.current = setTimeout(type, 28);
+                } else {
+                    setDone(true);
+                }
+            };
+            type();
+        }, 800);
+        return () => {
+            clearTimeout(startDelay);
+            if (timeoutRef.current) clearTimeout(timeoutRef.current);
+        };
+    }, [show]);
+
+    const renderRich = () => {
+        let cursor = 0;
+        return GREETING_SEGMENTS.map((seg, idx) => {
+            const segStart = cursor;
+            const segEnd = cursor + seg.text.length;
+            cursor = segEnd;
+            const visiblePart = displayed.slice(segStart, Math.min(segEnd, displayed.length));
+            if (!visiblePart) return null;
+            return seg.bold ? (
+                <span key={idx} className="font-extrabold text-blue-300">{visiblePart}</span>
+            ) : (
+                <span key={idx}>{visiblePart}</span>
+            );
+        });
+    };
+
+    return (
+        <AnimatePresence>
+            {show && (
+                <motion.div
+                    initial={{ opacity: 0, y: 8, scale: 0.93 }}
+                    animate={{ opacity: 1, y: 0, scale: 1 }}
+                    exit={{ opacity: 0, y: -6, scale: 0.95 }}
+                    transition={{ duration: 0.45, ease: 'easeOut' }}
+                    className="absolute z-[200] pointer-events-none"
+                    style={{
+                        left: `${posX}%`,
+                        top: `${posY}%`,
+                        transform: 'translate(-50%, calc(-80% - 210px))',
+                        width: '290px',
+                    }}
+                >
+                    {/* Bubble */}
+                    <div className="relative bg-[#060e24]/95 backdrop-blur-xl border border-blue-500/40 rounded-2xl px-5 py-4 shadow-[0_0_50px_rgba(59,130,246,0.2),inset_0_0_30px_rgba(59,130,246,0.03)]">
+                        <div className="flex items-center gap-2 mb-3">
+                            <div className="w-1.5 h-1.5 rounded-full bg-blue-400 animate-pulse" />
+                            <span className="text-[9px] font-mono text-blue-400/50 uppercase tracking-[0.35em]">System // Guide</span>
+                        </div>
+                        <p className="text-[13px] leading-relaxed text-slate-200/90 font-light min-h-[65px]">
+                            {renderRich()}
+                            {!done && (
+                                <span className="inline-block w-[2px] h-[13px] bg-blue-400 ml-[1px] align-middle animate-pulse" />
+                            )}
+                        </p>
+                    </div>
+                    {/* Downward arrow tail */}
+                    <div className="absolute left-1/2 -translate-x-1/2" style={{ bottom: '-9px' }}>
+                        <div style={{
+                            width: 0, height: 0,
+                            borderLeft: '9px solid transparent',
+                            borderRight: '9px solid transparent',
+                            borderTop: '10px solid rgba(59,130,246,0.35)',
+                        }} />
+                    </div>
+                    <div className="absolute left-1/2 -translate-x-1/2" style={{ bottom: '-7px' }}>
+                        <div style={{
+                            width: 0, height: 0,
+                            borderLeft: '7px solid transparent',
+                            borderRight: '7px solid transparent',
+                            borderTop: '8px solid #060e24',
+                        }} />
+                    </div>
+                </motion.div>
+            )}
+        </AnimatePresence>
+    );
+}
+// ────────────────────────────────────────────────────────────────────────────
+
+const MapCharacter = ({ startNodeId, targetNodeId, onReachTarget, onPosChange }: { 
+    startNodeId: string, 
+    targetNodeId: string | null, 
+    onReachTarget: () => void, 
+    onPosChange: (pos: { x: number; y: number }) => void 
+}) => {
     const startIdx = Math.max(0, MAP_NODES.findIndex(n => n.id === startNodeId));
     const targetIdx = targetNodeId ? Math.max(0, MAP_NODES.findIndex(n => n.id === targetNodeId)) : startIdx;
     
@@ -31,6 +146,11 @@ const MapCharacter = ({ startNodeId, targetNodeId, onReachTarget }: { startNodeI
     // Position states
     const [pos, setPos] = useState({ x: 0, y: 0 });
     const [rotation, setRotation] = useState(0);
+
+    // Lift position to parent for bubble rendering
+    useEffect(() => {
+        onPosChange(pos);
+    }, [pos.x, pos.y]);
 
     useEffect(() => {
         if (!isWalking) {
@@ -120,9 +240,24 @@ const MapCharacter = ({ startNodeId, targetNodeId, onReachTarget }: { startNodeI
 
 export default function MapOverlay() {
     const { isMapOpen, setIsMapOpen, activeNodeId, setActiveNodeId, visitedNodes, markVisited, animatingToNodeId, setAnimatingToNodeId } = useMapNavigation();
+    const [showGreeting, setShowGreeting] = useState(false);
+    const [charPos, setCharPos] = useState({ x: 10, y: 15 });
+
+    // Show greeting when map opens for the first time
+    useEffect(() => {
+        if (isMapOpen) {
+            setShowGreeting(true);
+            // Auto-hide after 8 seconds
+            const t = setTimeout(() => setShowGreeting(false), 8000);
+            return () => clearTimeout(t);
+        } else {
+            setShowGreeting(false);
+        }
+    }, [isMapOpen]);
 
     const handleNodeClick = (id: string) => {
         if (animatingToNodeId) return;
+        setShowGreeting(false); // dismiss greeting on interaction
         if (id === activeNodeId) {
             setIsMapOpen(false);
             return;
@@ -132,6 +267,7 @@ export default function MapOverlay() {
 
     const handleNext = () => {
         if (animatingToNodeId) return;
+        setShowGreeting(false);
         const currentIndex = MAP_NODES.findIndex(n => n.id === activeNodeId);
         if (currentIndex < MAP_NODES.length - 1) {
             setAnimatingToNodeId(MAP_NODES[currentIndex + 1].id);
@@ -188,10 +324,7 @@ export default function MapOverlay() {
                     className="fixed inset-0 z-[100] bg-[#020617]/98 flex flex-col justify-center items-center overflow-hidden"
                 >
                     {/* Deep Cinematic Background */}
-                    <div className="absolute inset-0 z-0">
-                        <div className="absolute inset-0 bg-gradient-radial from-blue-900/10 via-slate-950 to-slate-950 opacity-100" />
-                        <div className="absolute inset-0 opacity-20" style={{ backgroundImage: 'radial-gradient(circle at 2px 2px, rgba(59,130,246,0.1) 1px, transparent 0)', backgroundSize: '80px 80px' }} />
-                        <div className="absolute top-1/4 left-1/4 w-[500px] h-[500px] bg-blue-500/5 blur-[120px] rounded-full animate-pulse" />
+                    <div className="absolute inset-0 z-0 opacity-40">
                     </div>
 
                     <div className="relative z-10 w-full max-w-[1400px] px-24 h-[600px]">
@@ -235,9 +368,30 @@ export default function MapOverlay() {
                                 transition={{ duration: 2.5, ease: "easeInOut" }}
                                 filter="url(#glow)"
                             />
+
+                            {/* Moving Scan Line */}
+                            <motion.line 
+                                x1="0" y1="0" x2="1000" y2="0"
+                                stroke="#3b82f6" strokeWidth="1" opacity="0.1"
+                                animate={{ y: [0, 1000] }}
+                                transition={{ repeat: Infinity, duration: 4, ease: "linear" }}
+                            />
+
                         </svg>
 
-                        <MapCharacter startNodeId={activeNodeId} targetNodeId={animatingToNodeId} onReachTarget={onReachTarget} />
+                        <MapCharacter 
+                            startNodeId={activeNodeId} 
+                            targetNodeId={animatingToNodeId} 
+                            onReachTarget={onReachTarget} 
+                            onPosChange={setCharPos}
+                        />
+
+                        {/* Typing Speech Bubble: absolutely positioned in this container */}
+                        <TypingBubble 
+                            show={showGreeting && !animatingToNodeId} 
+                            posX={charPos.x} 
+                            posY={charPos.y} 
+                        />
 
                         {MAP_NODES.map((node, i) => {
                             const isActive = (animatingToNodeId || activeNodeId) === node.id;

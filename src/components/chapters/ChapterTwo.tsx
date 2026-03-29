@@ -26,48 +26,8 @@ export default function ChapterTwo({ projects }: ChapterTwoProps) {
 
     const activeProject = projects.find(p => p.id === caseStudyId);
 
-    if (caseStudyId && activeProject) {
-        return (
-            <section className="min-h-screen px-6 py-20 relative z-10">
-                <div className="max-w-4xl mx-auto relative z-10">
-                    <button
-                        onClick={closeCaseStudy}
-                        className="flex items-center gap-2 transition-colors mb-12 group text-mutedBlue"
-                    >
-                        <ArrowLeft size={20} className="group-hover:-translate-x-1 transition-transform" />
-                        <span>Back to Timeline</span>
-                    </button>
-
-                    <div className="mb-16">
-                        <div className="flex items-center gap-3 mb-4">
-                            <span className="px-3 py-1 text-xs font-bold rounded-full uppercase tracking-widest bg-deepEmerald/10 text-deepEmerald">
-                                {activeProject.impactBadge}
-                            </span>
-                            <span className="text-lightText text-sm">{activeProject.year}</span>
-                        </div>
-                        <h2 className="text-5xl font-bold mb-8 text-darkText">{activeProject.title}</h2>
-                        <p className="text-2xl font-light leading-relaxed text-lightText">{activeProject.description}</p>
-                    </div>
-
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-12 mb-20">
-                        <div className="space-y-8">
-                            <div>
-                                <h4 className="text-sm font-bold uppercase tracking-widest mb-4 text-mutedBlue">The Problem</h4>
-                                <p className="text-darkText/80 leading-relaxed">{activeProject.problem}</p>
-                            </div>
-                            <div>
-                                <h4 className="text-sm font-bold uppercase tracking-widest mb-4 text-mutedBlue">The Outcome</h4>
-                                <p className="text-darkText/80 leading-relaxed">{activeProject.outcome}</p>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </section>
-        )
-    }
-
     return (
-        <section id="chapter-2" className="min-h-screen px-6 pt-32 pb-20 relative overflow-hidden">
+        <section id="chapter-2" className="min-h-screen px-6 pb-12 relative overflow-hidden">
             <div className="max-w-6xl mx-auto relative z-10">
                 <motion.div
                     initial={{ opacity: 0, y: 30 }}
@@ -132,25 +92,30 @@ export default function ChapterTwo({ projects }: ChapterTwoProps) {
                                                     </h3>
                                                 </div>
 
-                                                <div className="flex flex-wrap gap-6 mb-8 py-4 border-y border-softGray/30 transition-colors duration-700">
+                                                <div className="flex flex-wrap gap-6 mb-8 py-4 border-y border-softGray/30 transition-colors duration-700 text-darkText/80">
                                                     {project.metrics?.map(m => (
                                                         <div key={m.label} className="min-w-[80px]">
                                                             <div className="text-[9px] font-bold uppercase tracking-tighter mb-1 text-mutedBlue/50 transition-colors duration-700">{m.label}</div>
-                                                            <div className="text-lg font-bold font-mono leading-none text-darkText transition-colors duration-700">{m.value}</div>
+                                                            <div className="text-lg font-bold font-mono leading-none">{m.value}</div>
                                                         </div>
-                                                    ))}
+                                                    )) || (
+                                                            <div className="min-w-[80px]">
+                                                                <div className="text-[9px] font-bold uppercase tracking-tighter mb-1 text-mutedBlue/50">Status</div>
+                                                                <div className="text-lg font-bold font-mono leading-none">PRODUCTION</div>
+                                                            </div>
+                                                        )}
                                                 </div>
 
                                                 <div className="text-lightText/70 mb-8 text-base leading-relaxed">
                                                     {project.description.includes('\n') ? (
                                                         <div className="space-y-4">
-                                                            {project.description.split('\n').filter(l => l.trim()).map((line, i) => {
+                                                            {project.description.split('\n').filter(l => l.trim()).slice(0, 2).map((line, i) => {
                                                                 const isBullet = line.trim().startsWith('-');
                                                                 const content = isBullet ? line.trim().substring(1).trim() : line.trim();
                                                                 return (
                                                                     <div key={i} className={`flex items-start gap-3 ${isBullet ? 'pl-2' : ''}`}>
                                                                         {isBullet && <div className="mt-2.5 w-1 h-1 rounded-full bg-mutedBlue/40 flex-shrink-0" />}
-                                                                        <span className="flex-1">
+                                                                        <span className="flex-1 line-clamp-2">
                                                                             {content.split(/(\*\*.*?\*\*)/).map((part, j) =>
                                                                                 part.startsWith('**') && part.endsWith('**') ? (
                                                                                     <span key={j} className="text-darkText font-bold">{part.slice(2, -2)}</span>
@@ -164,7 +129,7 @@ export default function ChapterTwo({ projects }: ChapterTwoProps) {
                                                             })}
                                                         </div>
                                                     ) : (
-                                                        <p>
+                                                        <p className="line-clamp-3">
                                                             {project.description.split(/(\*\*.*?\*\*)/).map((part, i) =>
                                                                 part.startsWith('**') && part.endsWith('**') ? (
                                                                     <span key={i} className="text-darkText font-bold">{part.slice(2, -2)}</span>
@@ -228,15 +193,106 @@ export default function ChapterTwo({ projects }: ChapterTwoProps) {
             </div>
 
             <AnimatePresence>
-                {focusedId && (
+                {(focusedId || caseStudyId) && (
                     <motion.div
                         initial={{ opacity: 0 }}
                         animate={{ opacity: 1 }}
                         exit={{ opacity: 0 }}
-                        onClick={closeFocus}
-                        className="fixed inset-0 bg-warmWhite/40 backdrop-blur-sm z-40 transition-colors cursor-crosshair"
-                        aria-hidden="true"
+                        onClick={() => { closeFocus(); closeCaseStudy(); }}
+                        className="fixed inset-0 bg-black/40 backdrop-blur-xl z-[100] cursor-crosshair"
                     />
+                )}
+
+                {caseStudyId && activeProject && (
+                    <motion.div
+                        initial={{ opacity: 0, x: '100%' }}
+                        animate={{ opacity: 1, x: 0 }}
+                        exit={{ opacity: 0, x: '100%' }}
+                        transition={{ type: 'spring', damping: 25, stiffness: 200 }}
+                        className="fixed top-0 right-0 w-full md:w-[70%] lg:w-[60%] h-screen bg-white shadow-[-20px_0_50px_rgba(0,0,0,0.1)] z-[110] overflow-y-auto"
+                    >
+                        <div className="p-8 md:p-16 max-w-4xl mx-auto">
+                            <button
+                                onClick={closeCaseStudy}
+                                className="flex items-center gap-3 text-mutedBlue font-bold uppercase tracking-widest text-xs mb-12 hover:gap-5 transition-all"
+                            >
+                                <ArrowLeft size={16} /> Back to Modules
+                            </button>
+
+                            <div className="space-y-12">
+                                <div>
+                                    <div className="flex items-center gap-4 mb-6">
+                                        <span className="px-4 py-1.5 bg-deepEmerald/10 text-deepEmerald text-[10px] font-bold uppercase tracking-widest rounded-full">
+                                            {activeProject.impactBadge || 'Production Ready'}
+                                        </span>
+                                        <span className="text-lightText/60 font-mono text-xs">{activeProject.year}</span>
+                                    </div>
+                                    <h2 className="text-4xl md:text-6xl font-bold text-darkText mb-6">{activeProject.title}</h2>
+                                    <p className="text-xl md:text-2xl text-lightText font-light leading-relaxed">
+                                        {activeProject.description}
+                                    </p>
+                                </div>
+
+                                <div className="grid grid-cols-2 lg:grid-cols-4 gap-6 p-8 bg-warmWhite rounded-[2rem] border border-softGray/50">
+                                    {(activeProject.metrics || [{ label: 'Status', value: 'Live' }]).map(m => (
+                                        <div key={m.label}>
+                                            <div className="text-[10px] font-bold uppercase tracking-widest text-mutedBlue/60 mb-1">{m.label}</div>
+                                            <div className="text-xl md:text-2xl font-bold text-darkText font-mono">{m.value}</div>
+                                        </div>
+                                    ))}
+                                </div>
+
+                                <div className="grid grid-cols-1 md:grid-cols-2 gap-12 pt-8">
+                                    <div className="space-y-8">
+                                        <section>
+                                            <h4 className="flex items-center gap-3 text-sm font-bold uppercase tracking-[0.2em] text-mutedBlue mb-4">
+                                                <div className="w-6 h-[1px] bg-mutedBlue/30" />
+                                                The Challenge
+                                            </h4>
+                                            <p className="text-darkText/80 leading-relaxed text-lg">
+                                                {activeProject.problem}
+                                            </p>
+                                        </section>
+                                        <section>
+                                            <h4 className="flex items-center gap-3 text-sm font-bold uppercase tracking-[0.2em] text-mutedBlue mb-4">
+                                                <div className="w-6 h-[1px] bg-mutedBlue/30" />
+                                                The Solution
+                                            </h4>
+                                            <p className="text-darkText/80 leading-relaxed text-lg">
+                                                {activeProject.outcome}
+                                            </p>
+                                        </section>
+                                    </div>
+
+                                    <div className="space-y-8">
+                                        <section className="p-8 bg-darkText text-white rounded-[2rem]">
+                                            <h4 className="text-[10px] uppercase tracking-[0.3em] opacity-50 mb-6">Engineering Decisions</h4>
+                                            <div className="space-y-6">
+                                                <div>
+                                                    <div className="text-xs font-bold text-mutedBlue mb-2">Rationale</div>
+                                                    <p className="text-sm opacity-80 leading-relaxed">{activeProject.decisions.why}</p>
+                                                </div>
+                                                <div>
+                                                    <div className="text-xs font-bold text-mutedBlue mb-2">Scalability</div>
+                                                    <p className="text-sm opacity-80 leading-relaxed">{activeProject.decisions.scalability}</p>
+                                                </div>
+                                            </div>
+                                        </section>
+                                        <section>
+                                            <h4 className="text-xs font-bold uppercase tracking-[0.2em] text-mutedBlue mb-4">Stack Architecture</h4>
+                                            <div className="flex flex-wrap gap-2">
+                                                {activeProject.techStack.map(tech => (
+                                                    <span key={tech} className="px-4 py-2 bg-warmWhite border border-softGray text-sm font-medium rounded-xl text-darkText">
+                                                        {tech}
+                                                    </span>
+                                                ))}
+                                            </div>
+                                        </section>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </motion.div>
                 )}
             </AnimatePresence>
         </section>

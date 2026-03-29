@@ -17,6 +17,7 @@ import { useMapNavigation } from '../context/MapContext';
 import MapOverlay from './MapOverlay';
 import { Navigation, ArrowRight } from 'lucide-react';
 import { MAP_NODES } from '../experience/IntroConstants';
+import ForceFieldBackground from './ForceFieldBackground';
 function ChapterFooter() {
     const { isMapOpen, setIsMapOpen, activeNodeId, setAnimatingToNodeId, animatingToNodeId } = useMapNavigation();
     const currentIndex = MAP_NODES.findIndex(n => n.id === activeNodeId);
@@ -66,7 +67,7 @@ import { useParams, useNavigate } from 'react-router-dom';
 function PortfolioContent() {
     const { chapterId } = useParams();
     const navigate = useNavigate();
-    const { isMapOpen, setIsMapOpen, activeNodeId, setActiveNodeId } = useMapNavigation();
+    const { isMapOpen, activeNodeId, setActiveNodeId } = useMapNavigation();
 
     // Sync URL with context - Ensure param is prioritized
     useEffect(() => {
@@ -92,6 +93,16 @@ function PortfolioContent() {
     return (
         <div className="h-screen w-full transition-colors duration-1000 relative text-darkText bg-[#08080a] overflow-hidden">
             <div className="grainy-overlay z-0 pointer-events-none" />
+            
+            {/* Global High-Tech Background */}
+            <div className="absolute inset-0 z-0 opacity-20 pointer-events-none">
+                <ForceFieldBackground 
+                    hue={210}
+                    spacing={12}
+                    forceStrength={10}
+                    magnifierRadius={150}
+                />
+            </div>
             <CustomCursor />
             <StoryMapEngine activeNodeId={activeNodeId} />
 
@@ -99,7 +110,7 @@ function PortfolioContent() {
 
             {/* Active Content Window */}
             <main className="relative z-10 w-full h-full overflow-y-auto hide-scrollbar flex flex-col items-center">
-                <div className="w-full max-w-6xl px-6 pt-40 pb-20 flex flex-col items-center min-h-full">
+                <div className="w-full max-w-6xl px-6 pt-16 pb-20 flex flex-col items-center min-h-full">
                     <AnimatePresence mode="wait">
                         {!isMapOpen && (
                             <motion.div 

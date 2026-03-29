@@ -22,7 +22,7 @@ export default function SocialTerminal({ socials }: SocialTerminalProps) {
     const selectedProfile = socials.find(s => s.platform === selectedId);
 
     return (
-        <section id="connect" className="py-40 px-6 transition-colors duration-1000 relative bg-transparent">
+        <section id="connect" className="pb-40 px-6 transition-colors duration-1000 relative bg-transparent">
             <div className="max-w-4xl mx-auto relative z-10 text-center">
                 <motion.div
                     initial={{ opacity: 0, y: 20 }}
